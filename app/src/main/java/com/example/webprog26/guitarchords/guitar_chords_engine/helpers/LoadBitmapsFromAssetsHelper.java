@@ -1,4 +1,4 @@
-package com.example.webprog26.guitarchords.engine.helpers;
+package com.example.webprog26.guitarchords.guitar_chords_engine.helpers;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -10,13 +10,19 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
- * Created by webprog26 on 09.05.2017.
+ * Helper class to load chord images from specific directory in assets
  */
 
 public class LoadBitmapsFromAssetsHelper {
 
     private static final String TAG = "BitmapsHelper";
 
+    /**
+     * Loads single {@link Bitmap} via given path
+     * @param assetManager {@link AssetManager}
+     * @param fileName {@link String}
+     * @return Bitmap
+     */
     private static Bitmap loadBitmapFromAssets(AssetManager assetManager, String fileName){
         Bitmap bitmap = null;
         InputStream inputStream = null;
@@ -35,24 +41,24 @@ public class LoadBitmapsFromAssetsHelper {
             }
         }
 
-        if(bitmap != null){
-            Log.i(TAG, bitmap.toString());
-        } else {
-            Log.i(TAG, "bitmap is nullllllll");
-        }
-
         return bitmap;
     }
 
+    /**
+     * Loads ArrayList of chord's images via given path and loadBitmapFromAssets() method
+     * @param assetManager {@link AssetManager}
+     * @param dirName {@link String}
+     * @return ArrayList
+     */
     private static ArrayList<Bitmap> getBitmapsFromAssets(AssetManager assetManager, String dirName){
 
         ArrayList<Bitmap> bitmaps = new ArrayList<>();
-        Log.i(TAG, "getBitmapsFromAssets");
+
         try {
             String[] fileNames = assetManager.list(dirName);
-            Log.i(TAG, "getBitmapsFromAssets fileNames " + fileNames.length);
+
             for(String fileName: fileNames){
-                Log.i(TAG, fileName);
+
                 Bitmap bitmap = loadBitmapFromAssets(assetManager, dirName + "/" + fileName);
                 if(bitmap != null){
                     bitmaps.add(bitmap);
@@ -65,6 +71,12 @@ public class LoadBitmapsFromAssetsHelper {
         return bitmaps;
     }
 
+    /**
+     * Loads ArrayList of chord's images via given path
+     * @param assetManager {@link AssetManager}
+     * @param path {@link String}
+     * @return ArrayList
+     */
     public static ArrayList<Bitmap> getBitmaps(AssetManager assetManager, String path){
         Log.i(TAG, "getBitmaps from path " + path);
         return getBitmapsFromAssets(assetManager, path);

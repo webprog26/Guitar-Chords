@@ -1,12 +1,12 @@
-package com.example.webprog26.guitarchords.engine.commands;
+package com.example.webprog26.guitarchords.guitar_chords_engine.commands;
 
 import android.support.v4.app.FragmentManager;
 
-import com.example.webprog26.guitarchords.engine.models.Chord;
+import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 import com.example.webprog26.guitarchords.fragments.ChordFragment;
 
 /**
- * Created by webprog26 on 09.05.2017.
+ * This {@link Command} loads next {@link ChordFragment} every time when user changes chord's params with spinners
  */
 
 public class LoadChordFragmentCommand implements Command {

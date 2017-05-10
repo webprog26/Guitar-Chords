@@ -1,11 +1,11 @@
-package com.example.webprog26.guitarchords.engine.events;
+package com.example.webprog26.guitarchords.guitar_chords_engine.events;
 
 import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 
 /**
- * Created by webprog26 on 09.05.2017.
+ * Runs when chord images has been loaded from specific directory in assets
  */
 
 public class ChordsImagesLoadedEvent {

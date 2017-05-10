@@ -2,6 +2,12 @@
     <string name="app_name">Guitar Chords</string>
     <string name="btn_go">Go</string>
 
+    <string name="build_your_chord">Build your chord</string>
+    <string name="wrong_chord">No %1$s chord. Switched to %2$s</string>
+    <string name="why">Why?</string>
+    <string name="reference">Reference</string>
+    <string name="reference_text">Reference for %1$s</string>
+
     <!--Chords titles-->
     <string-array name="chords_titles">
         <item>C</item>

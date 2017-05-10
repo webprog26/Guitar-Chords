@@ -1,4 +1,4 @@
-package com.example.webprog26.guitarchords.engine.models;
+package com.example.webprog26.guitarchords.guitar_chords_engine.models;
 
 import android.graphics.Bitmap;
 
@@ -17,7 +17,6 @@ public class Chord implements Serializable{
     private String mChordTitle;
     private String mChordType;
     private String mChordParam;
-    private ArrayList<Bitmap> mChordsImages;
 
     public Chord() {
     }
@@ -55,14 +54,6 @@ public class Chord implements Serializable{
 
     public void setChordParam(String chordParam) {
         this.mChordParam = chordParam;
-    }
-
-    public ArrayList<Bitmap> getChordsImages() {
-        return mChordsImages;
-    }
-
-    public void setChordsImages(ArrayList<Bitmap> chordsImages) {
-        this.mChordsImages = chordsImages;
     }
 
     @Override

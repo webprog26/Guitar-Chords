@@ -1,7 +1,7 @@
-package com.example.webprog26.guitarchords.engine.events;
+package com.example.webprog26.guitarchords.guitar_chords_engine.events;
 
 /**
- * Created by webprog26 on 09.05.2017.
+ * Runs when app needs to load chords images from specific directory in assets
  */
 
 public class LoadChordsImagesFromAssetsEvent {

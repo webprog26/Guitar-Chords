@@ -4,17 +4,20 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.webprog26.guitarchords.R;
-import com.example.webprog26.guitarchords.engine.events.ChordsImagesLoadedEvent;
-import com.example.webprog26.guitarchords.engine.events.LoadChordsImagesFromAssetsEvent;
-import com.example.webprog26.guitarchords.engine.models.Chord;
-import com.example.webprog26.guitarchords.engine.helpers.LoadBitmapsFromAssetsHelper;
+import com.example.webprog26.guitarchords.guitar_chords_engine.adapter.ChordImagesAdapter;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsImagesLoadedEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadChordsImagesFromAssetsEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
+import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.LoadBitmapsFromAssetsHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,7 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * Created by webprog26 on 09.05.2017.
+ * Fragment to host {@link RecyclerView} with chosen chord images
  */
 
 public class ChordFragment extends Fragment {
@@ -42,14 +45,17 @@ public class ChordFragment extends Fragment {
     private static final String SHARP = "sharp";
     private static final String FLAT = "flat";
 
-    private static final int FINGERING_IMAGES_PER_CHORD_COUNT = 5;
-
-    @BindView(R.id.tv)
-    TextView tv;
+    @BindView(R.id.rv_chord_images)
+    RecyclerView mRvChordImages;
 
     private Unbinder unbinder;
 
-    public static ChordFragment newInstance(Chord chord){
+    /**
+     * Initializes {@link ChordFragment} instance with chosen {@link Chord}
+     * @param chord {@link Chord}
+     * @return ChordFragment
+     */
+    public static ChordFragment newInstance(final Chord chord){
         Bundle args = new Bundle();
         args.putSerializable(CHORD, chord);
         ChordFragment chordFragment = new ChordFragment();
@@ -71,17 +77,17 @@ public class ChordFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        initImagesRecyclerView();
+
         if(getArguments() != null){
             Chord chord = (Chord) getArguments().getSerializable(CHORD);
-            tv.setText(chord.toString());
 
             String imagesPath = getImagesPath(chord);
 
-            Log.i(TAG, chord.toString());
             if(imagesPath != null){
                 EventBus.getDefault().post(new LoadChordsImagesFromAssetsEvent(imagesPath));
             }
-            Log.i(TAG, "imagesPath " + imagesPath);
         }
     }
 
@@ -94,21 +100,29 @@ public class ChordFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onLoadChordsImagesFromAssetsEvent(LoadChordsImagesFromAssetsEvent loadChordsImagesFromAssetsEvent){
-        Log.i(TAG, "onLoadChordsImagesFromAssetsEvent");
-        ArrayList<Bitmap> bitmaps = LoadBitmapsFromAssetsHelper.getBitmaps(getActivity().getAssets(), loadChordsImagesFromAssetsEvent.getPathString());
-        Log.i(TAG, "onLoadChordsImagesFromAssetsEvent bitmaps.size()" + bitmaps.size());
+
+        ArrayList<Bitmap> bitmaps = LoadBitmapsFromAssetsHelper.getBitmaps(getActivity().getAssets(),
+                                                                           loadChordsImagesFromAssetsEvent.getPathString());
+
         EventBus.getDefault().post(new ChordsImagesLoadedEvent(bitmaps));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChordsImagesLoadedEvent(ChordsImagesLoadedEvent chordsImagesLoadedEvent){
-        Log.i(TAG, "onChordsImagesLoadedEvent");
-        for(Bitmap bitmap: chordsImagesLoadedEvent.getChordsImages()){
-            Log.i(TAG, bitmap.toString());
-        }
+
+        ChordImagesAdapter imagesAdapter = new ChordImagesAdapter(chordsImagesLoadedEvent.getChordsImages(),
+                                                                  getActivity());
+
+        getRvChordImages().setAdapter(imagesAdapter);
     }
 
+    /**
+     * Creates path to chosen chord images directory depending on chord params
+     * @param chord {@link Chord}
+     * @return String
+     */
     private String getImagesPath(final Chord chord){
+
         String imagesPath = chord.getChordTitle().toLowerCase();
 
         if(!chord.getChordType().equalsIgnoreCase(Chord.NO_TYPE)){
@@ -131,5 +145,19 @@ public class ChordFragment extends Fragment {
         }
 
         return imagesPath;
+    }
+
+    /**
+     * Initializes chord images {@link RecyclerView} with necessary params
+     */
+    private void initImagesRecyclerView(){
+        RecyclerView rvChordImages = getRvChordImages();
+        rvChordImages.setHasFixedSize(true);
+        rvChordImages.setItemAnimator(new DefaultItemAnimator());
+        rvChordImages.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    public RecyclerView getRvChordImages() {
+        return mRvChordImages;
     }
 }

@@ -9,4 +9,5 @@ public interface SpinnerReseter {
     public void resetChordsTitleSpinner();
     public void resetChordsTypesSpinner();
     public void resetChordsParamsSpinner();
+    public void setChordsTitleSpinnerPosition(final int position);
 }
