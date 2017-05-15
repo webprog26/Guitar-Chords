@@ -33,6 +33,7 @@ public class UIMessageCommand implements Command {
     public Chord getChord() {
         return mChord;
     }
+
     private String getFormattedMessage(final Chord chord){
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -42,8 +43,8 @@ public class UIMessageCommand implements Command {
             stringBuilder.append(chord.getChordType());
         }
 
-        if(!chord.getChordParam().equalsIgnoreCase(Chord.NO_PARAM)){
-            stringBuilder.append(chord.getChordParam());
+        if(!chord.getChordAlteration().equalsIgnoreCase(Chord.NO_PARAM)){
+            stringBuilder.append(chord.getChordAlteration());
         }
 
         return stringBuilder.toString();

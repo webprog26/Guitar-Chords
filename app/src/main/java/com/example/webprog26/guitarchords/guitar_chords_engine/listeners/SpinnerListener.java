@@ -1,6 +1,5 @@
 package com.example.webprog26.guitarchords.guitar_chords_engine.listeners;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -64,19 +63,19 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener {
                break;
             case R.id.sp_chords_params:
                 if(!adapterView.getSelectedItem().toString().equalsIgnoreCase(EMPTY_POSITION)){
-                    chord.setChordParam(adapterView.getSelectedItem().toString());
+                    chord.setChordAlteration(adapterView.getSelectedItem().toString());
                 } else {
-                    chord.setChordParam(Chord.NO_PARAM);
+                    chord.setChordAlteration(Chord.NO_PARAM);
                 }
                 break;
        }
 
-        if(chord.getChordTitle() != null && chord.getChordType() != null && chord.getChordParam() != null){
+        if(chord.getChordTitle() != null && chord.getChordType() != null && chord.getChordAlteration() != null){
 
             String toChord = null;
             int toPosition = -1;
 
-            if(chord.getChordParam().equalsIgnoreCase(FLAT_CHORD_PARAM)){
+            if(chord.getChordAlteration().equalsIgnoreCase(FLAT_CHORD_PARAM)){
 
                 if(chord.getChordTitle().equalsIgnoreCase(C_CHORD)){
                     toChord = H_CHORD;
@@ -89,7 +88,7 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener {
                 }
             }
 
-            if(chord.getChordParam().equalsIgnoreCase(SHARP_CHORD_PARAM)){
+            if(chord.getChordAlteration().equalsIgnoreCase(SHARP_CHORD_PARAM)){
 
                 if(chord.getChordTitle().equalsIgnoreCase(H_CHORD)){
                     toChord = C_CHORD;
@@ -133,7 +132,7 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener {
 
     private void changeChordTitleAndResetParams(final String chordTitle, final int position){
         getChord().setChordTitle(chordTitle);
-        getChord().setChordParam(Chord.NO_PARAM);
+        getChord().setChordAlteration(Chord.NO_PARAM);
         getSpinnerReseter().resetChordsParamsSpinner();
         getSpinnerReseter().setChordsTitleSpinnerPosition(position);
     }

@@ -131,8 +131,8 @@ public class ChordFragment extends Fragment {
             imagesPath += "/" + MAJ;
         }
 
-        if(!chord.getChordParam().equalsIgnoreCase(Chord.NO_PARAM)){
-            switch (chord.getChordParam()){
+        if(!chord.getChordAlteration().equalsIgnoreCase(Chord.NO_PARAM)){
+            switch (chord.getChordAlteration()){
                 case "b":
                     imagesPath += "/" + FLAT;
                     break;
