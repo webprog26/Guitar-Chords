@@ -23,11 +23,12 @@ public class LoadBitmapsFromAssetsHelper {
      * @param fileName {@link String}
      * @return Bitmap
      */
-    private static Bitmap loadBitmapFromAssets(AssetManager assetManager, String fileName){
+    public static Bitmap loadBitmapFromAssets(AssetManager assetManager, String fileName){
         Bitmap bitmap = null;
         InputStream inputStream = null;
         try {
             inputStream = assetManager.open(fileName);
+            Log.i(TAG, "fileName " + fileName);
             bitmap = BitmapFactory.decodeStream(inputStream);
         } catch (IOException ioe){
             ioe.printStackTrace();
@@ -78,7 +79,25 @@ public class LoadBitmapsFromAssetsHelper {
      * @return ArrayList
      */
     public static ArrayList<Bitmap> getBitmaps(AssetManager assetManager, String path){
-        Log.i(TAG, "getBitmaps from path " + path);
         return getBitmapsFromAssets(assetManager, path);
+    }
+
+    public static Bitmap getBitmapFromAsset(AssetManager mgr, String path) {
+        InputStream is = null;
+        Bitmap bitmap = null;
+        try {
+            is = mgr.open(path);
+            bitmap = BitmapFactory.decodeStream(is);
+        } catch (final IOException e) {
+            bitmap = null;
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        return bitmap;
     }
 }

@@ -36,6 +36,7 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener {
 
     private final ChordsManager mChordsManager;
     private final SpinnerReseter mSpinnerReseter;
+    //Empty Chord instance to ctore parameters chosen vy user via spinners
     private Chord mChord = new Chord();
 
     public SpinnerListener(ChordsManager chordsManager, SpinnerReseter spinnerReseter) {
@@ -75,33 +76,40 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener {
             String toChord = null;
             int toPosition = -1;
 
+            //Handling C flat, F flat
             if(chord.getChordAlteration().equalsIgnoreCase(FLAT_CHORD_PARAM)){
 
+                //C flat case
                 if(chord.getChordTitle().equalsIgnoreCase(C_CHORD)){
                     toChord = H_CHORD;
                     toPosition = H_POSITION;
                 }
 
+                //F flat case
                 if(chord.getChordTitle().equalsIgnoreCase(F_CHORD)){
                     toChord = E_CHORD;
                     toPosition = E_POSITION;
                 }
             }
 
+            //Handling H sharp, E sharp cases
             if(chord.getChordAlteration().equalsIgnoreCase(SHARP_CHORD_PARAM)){
 
+                //H sharp case
                 if(chord.getChordTitle().equalsIgnoreCase(H_CHORD)){
                     toChord = C_CHORD;
                     toPosition = C_POSITION;
                 }
 
+                //E sharp case
                 if(chord.getChordTitle().equalsIgnoreCase(E_CHORD)){
                     toChord = F_CHORD;
                     toPosition = F_POSITION;
                 }
             }
 
-            if(toPosition != -1 && toChord != null){
+//            if(toChord != null && toPosition != -1){
+            if(toChord != null){
                 getChordsManager().sendUiMessage(chord, toChord);
                 changeChordTitleAndResetParams(toChord, toPosition);
             }
@@ -130,6 +138,11 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener {
         return mSpinnerReseter;
     }
 
+    /**
+     * In case of chosing unexisting chord resets spinners and changes user selection to right chord
+     * @param chordTitle {@link String}
+     * @param position int
+     */
     private void changeChordTitleAndResetParams(final String chordTitle, final int position){
         getChord().setChordTitle(chordTitle);
         getChord().setChordAlteration(Chord.NO_PARAM);

@@ -15,20 +15,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Chords table columns
     public static final String CHORDS_TABLE = "chords_table";
-    public static final String ID = "_id";
+    public static final String CHORD_ID = "_id";
     public static final String CHORD_TITLE = "chord_title";
     public static final String CHORD_SECOND_TITLE = "chord_second_title";
     public static final String CHORD_TYPE = "chord_type";
     public static final String CHORD_ALTERATION = "chord_alteration";
+    public static final String CHORD_SHAPES_TABLE = "chord_shapes_table";
 
     //Chords shapes tables titles
-    public static final String C_MAJ_ORDINARY = "c_shapes";
+    public static final String C_MAJ_ORDINARY_SHAPES = "c_maj_ordinary";
 
     //Chord shape table columns
     public static final String SHAPE_ID = "_id";
     public static final String SHAPE_POSITION = "shape_position";
     public static final String SHAPE_START_FRET_NUMBER = "shape_start_fret_number";
     public static final String SHAPE_NOTE_TITLE = "shape_note_title";
+    public static final String SHAPE_NOTE_FINGER_INDEX = "shape_note_finger_index";
     public static final String SHAPE_NOTE_X = "shape_note_x";
     public static final String SHAPE_NOTE_Y = "shape_note_y";
     public static final String SHAPE_HAS_BAR = "shape_has_bar";
@@ -37,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String SHAPE_BAR_END_X = "shape_bar_end_x";
     public static final String SHAPE_BAR_END_Y = "shape_bar_end_y";
     public static final String SHAPE_IMAGE_TITLE = "shape_image_title";
+    public static final String SHAPE_HAS_MUTED_STRINGS = "shape_has_muted_strings";
     public static final String SHAPE_SIXTH_STRING_MUTED = "shape_sixth_string_muted";
     public static final String SHAPE_FIFTH_STRING_MUTED = "shape_fifth_string_muted";
     public static final String SHAPE_FOURTH_STRING_MUTED = "shape_fourth_string_muted";
@@ -50,7 +53,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("create table " + CHORDS_TABLE + "("
+        + CHORD_ID + " integer primary key autoincrement, "
+        + CHORD_TITLE + " varchar(100), "
+        + CHORD_SECOND_TITLE + " varchar(100), "
+        + CHORD_TYPE + " varchar(100), "
+        + CHORD_ALTERATION + " varchar(100), "
+        + CHORD_SHAPES_TABLE + " varchar(100))");
 
+        db.execSQL("create table " + C_MAJ_ORDINARY_SHAPES + "("
+                + SHAPE_ID + " integer primary key autoincrement, "
+                + SHAPE_POSITION + " integer, "
+                + SHAPE_START_FRET_NUMBER + " integer, "
+                + SHAPE_NOTE_TITLE + " varchar(100), "
+                + SHAPE_NOTE_FINGER_INDEX + " integer, "
+                + SHAPE_NOTE_X + " integer, "
+                + SHAPE_NOTE_Y + " integer, "
+                + SHAPE_HAS_BAR + " varchar(100), "
+                + SHAPE_BAR_START_X + " integer, "
+                + SHAPE_BAR_START_Y + " integer, "
+                + SHAPE_BAR_END_X + " integer, "
+                + SHAPE_BAR_END_Y + " integer, "
+                + SHAPE_IMAGE_TITLE + " varchar(100), "
+                + SHAPE_HAS_MUTED_STRINGS + " varchar(100), "
+                + SHAPE_SIXTH_STRING_MUTED + " varchar(100), "
+                + SHAPE_FIFTH_STRING_MUTED + " varchar(100), "
+                + SHAPE_FOURTH_STRING_MUTED + " varchar(100), "
+                + SHAPE_THIRD_STRING_MUTED + " varchar(100), "
+                + SHAPE_SECOND_STRING_MUTED + " varchar(100), "
+                + SHAPE_FIRST_STRING_MUTED + " varchar(100))"
+        );
     }
 
     @Override

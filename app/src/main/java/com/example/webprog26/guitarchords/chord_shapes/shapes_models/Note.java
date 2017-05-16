@@ -2,6 +2,8 @@ package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
 
 import android.graphics.Point;
 
+import java.io.Serializable;
+
 /**
  * Created by webpr on 15.05.2017.
  */

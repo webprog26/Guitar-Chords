@@ -60,38 +60,71 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
     protected void onResume() {
         super.onResume();
         if(!getSharedPreferences().getBoolean(ARE_CHORDS_SHAPES_BEEN_READ_TAG, false)){
+            //No data in database, read data from JSON
             EventBus.getDefault().post(new ReadJSONDataFromAssetsEvent());
+        } else {
+            //Data is present in database, make user possible to resume
+            getBtnGo().setEnabled(true);
         }
     }
 
+    /**
+     * Handles {@link ReadJSONDataFromAssetsEvent}. Starts reading data from JSON file,
+     * located in assets directory
+     * @param readJSONDataFromAssetsEvent {@link ReadJSONDataFromAssetsEvent}
+     */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onReadJSONDataFromAssetsEvent(ReadJSONDataFromAssetsEvent readJSONDataFromAssetsEvent){
+        //Starting reading data from JSON file
         new ReadDataFromJSONCommand(getAssets()).execute();
     }
 
+    /**
+     * Handles {@link JSONDataHasBeenReadEvent}. Starts transforming read data into POJOs
+     * @param jsonDataHasBeenReadEvent {@link JSONDataHasBeenReadEvent}
+     */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onJSONDataHasBeenReadEvent(JSONDataHasBeenReadEvent jsonDataHasBeenReadEvent){
         Log.i(TAG, "JSONDataHasBeenReadEvent in StartActivity");
+        //Starting transforming read data into POJOs
         new TransformJSONDataToPojosCommand(jsonDataHasBeenReadEvent.getJSONDataString()).execute();
     }
 
+    /**
+     * Handles {@link DataHasBeenTransformedToPOJOsEvent}. Starts inserting data to local
+     * {@link android.database.sqlite.SQLiteDatabase} instance
+     * @param dataHasBeenTransformedToPOJOsEvent {@link DataHasBeenTransformedToPOJOsEvent}
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDataHasBeenTransformedToPOJOsEvent(DataHasBeenTransformedToPOJOsEvent dataHasBeenTransformedToPOJOsEvent){
         for(Chord chord: dataHasBeenTransformedToPOJOsEvent.getChords()){
             Log.i(TAG, chord.toString());
         }
-       EventBus.getDefault().post(new LoadDataToDatabaseEvent(dataHasBeenTransformedToPOJOsEvent.getChords()));
+        EventBus.getDefault().post(new LoadDataToDatabaseEvent(dataHasBeenTransformedToPOJOsEvent.getChords()));
     }
 
+    /**
+     * Handles {@link LoadDataToDatabaseEvent}. Starts inserting data to local
+     * {@link android.database.sqlite.SQLiteDatabase} instance
+     * @param loadDataToDatabaseEvent {@link LoadDataToDatabaseEvent}
+     */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onLoadDataToDatabaseEvent(LoadDataToDatabaseEvent loadDataToDatabaseEvent){
+        //Starting inserting data to local database
         GuitarChordsApp.getDatabaseProvider().addChordsToDB(loadDataToDatabaseEvent.getChords());
     }
 
+    /**
+     * Handles {@link ChordsLoadedToDatabaseEvent}. Writes marker to {@link SharedPreferences}
+     * and makes resume-app's-work button enabled
+     * @param chordsLoadedToDatabaseEvent {@link ChordsLoadedToDatabaseEvent}
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChordsLoadedToDatabaseEvent(ChordsLoadedToDatabaseEvent chordsLoadedToDatabaseEvent){
         Log.i(TAG, "onChordsLoadedToDatabaseEvent");
+        //Writing marker to {@link SharedPreferences}
         getSharedPreferences().edit().putBoolean(ARE_CHORDS_SHAPES_BEEN_READ_TAG, true).apply();
+        //Making resume-app's-work button enabled
         getBtnGo().setEnabled(true);
     }
 

@@ -7,15 +7,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.webprog26.guitarchords.R;
-import com.example.webprog26.guitarchords.guitar_chords_engine.adapter.ChordImagesAdapter;
-import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsImagesLoadedEvent;
-import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadChordsImagesFromAssetsEvent;
+import com.example.webprog26.guitarchords.app.GuitarChordsApp;
+import com.example.webprog26.guitarchords.chord_shapes.db.DatabaseProvider;
+import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
+import com.example.webprog26.guitarchords.guitar_chords_engine.adapter.ChordsShapesAdapter;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsShapesReadyWithImagesEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.FillChordWithDataEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadShapesFromDatabaseEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.SetChordSecondTitleEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.ShapesLoadedFromDatabaseEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.LoadBitmapsFromAssetsHelper;
 
@@ -40,15 +45,13 @@ public class ChordFragment extends Fragment {
     public static final String CHORD = "chord";
 
 
-    private static final String MAJ = "maj";
-    private static final String ORDINARY = "ordinary";
-    private static final String SHARP = "sharp";
-    private static final String FLAT = "flat";
-
     @BindView(R.id.rv_chord_images)
     RecyclerView mRvChordImages;
 
     private Unbinder unbinder;
+    private DatabaseProvider mDatabaseProvider;
+    private ChordsShapesAdapter mChordsShapesAdapter;
+
 
     /**
      * Initializes {@link ChordFragment} instance with chosen {@link Chord}
@@ -64,12 +67,29 @@ public class ChordFragment extends Fragment {
         return chordFragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+        mDatabaseProvider = GuitarChordsApp.getDatabaseProvider();
+        if(getArguments() != null){
+            final Chord chord = (Chord) getArguments().getSerializable(CHORD);
+
+            EventBus.getDefault().post(new FillChordWithDataEvent(chord));
+
+            mChordsShapesAdapter = new ChordsShapesAdapter(chord.getChordShapes(), getActivity());
+
+            EventBus.getDefault().post(new LoadShapesFromDatabaseEvent(chord));
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chord_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-        EventBus.getDefault().register(this);
+
+
         return view;
     }
 
@@ -78,83 +98,63 @@ public class ChordFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initImagesRecyclerView();
-
-        if(getArguments() != null){
-            Chord chord = (Chord) getArguments().getSerializable(CHORD);
-
-            String imagesPath = getImagesPath(chord);
-
-            if(imagesPath != null){
-                EventBus.getDefault().post(new LoadChordsImagesFromAssetsEvent(imagesPath));
-            }
-        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onLoadChordsImagesFromAssetsEvent(LoadChordsImagesFromAssetsEvent loadChordsImagesFromAssetsEvent){
+    public void onLoadShapesFromDatabaseEvent(LoadShapesFromDatabaseEvent loadShapesFromDatabaseEvent){
+        final ArrayList<ChordShape> chordShapes = mDatabaseProvider.getChordShapes(loadShapesFromDatabaseEvent.getChord());
+                EventBus.getDefault().post(new ShapesLoadedFromDatabaseEvent(chordShapes));
+    }
 
-        ArrayList<Bitmap> bitmaps = LoadBitmapsFromAssetsHelper.getBitmaps(getActivity().getAssets(),
-                                                                           loadChordsImagesFromAssetsEvent.getPathString());
-
-        EventBus.getDefault().post(new ChordsImagesLoadedEvent(bitmaps));
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onShapesLoadedFromDatabaseEvent(ShapesLoadedFromDatabaseEvent shapesLoadedFromDatabaseEvent){
+        ArrayList<ChordShape> chordShapes = shapesLoadedFromDatabaseEvent.getChordShapes();
+        for(ChordShape chordShape: chordShapes){
+            Bitmap shapeImage = LoadBitmapsFromAssetsHelper.loadBitmapFromAssets(getActivity().getAssets(),
+                    chordShape.getImagePath());
+            if(shapeImage != null){
+                chordShape.setShapeImage(shapeImage);
+            }
+        }
+        EventBus.getDefault().post(new ChordsShapesReadyWithImagesEvent(chordShapes));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onChordsImagesLoadedEvent(ChordsImagesLoadedEvent chordsImagesLoadedEvent){
+    public void onChordsShapesReadyWithImagesEvent(ChordsShapesReadyWithImagesEvent chordsShapesReadyWithImagesEvent){
 
-        ChordImagesAdapter imagesAdapter = new ChordImagesAdapter(chordsImagesLoadedEvent.getChordsImages(),
-                                                                  getActivity());
+        mChordsShapesAdapter.updateAdapterData(chordsShapesReadyWithImagesEvent.getChordShapes());
 
-        getRvChordImages().setAdapter(imagesAdapter);
+        initImagesRecyclerView(mChordsShapesAdapter);
     }
 
-    /**
-     * Creates path to chosen chord images directory depending on chord params
-     * @param chord {@link Chord}
-     * @return String
-     */
-    private String getImagesPath(final Chord chord){
-
-        String imagesPath = chord.getChordTitle().toLowerCase();
-
-        if(!chord.getChordType().equalsIgnoreCase(Chord.NO_TYPE)){
-            imagesPath += "/" + chord.getChordType();
-        } else {
-            imagesPath += "/" + MAJ;
-        }
-
-        if(!chord.getChordAlteration().equalsIgnoreCase(Chord.NO_PARAM)){
-            switch (chord.getChordAlteration()){
-                case "b":
-                    imagesPath += "/" + FLAT;
-                    break;
-                case "#":
-                    imagesPath += "/" + SHARP;
-                    break;
-            }
-        } else {
-            imagesPath += "/" + ORDINARY;
-        }
-
-        return imagesPath;
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onFillChordWithDataEvent(FillChordWithDataEvent fillChordWithDataEvent){
+        final Chord chordWithSecondTitle = mDatabaseProvider.getChordWithSecondTitle(fillChordWithDataEvent.getChord());
+        EventBus.getDefault().post(new SetChordSecondTitleEvent(chordWithSecondTitle));
     }
 
     /**
      * Initializes chord images {@link RecyclerView} with necessary params
      */
-    private void initImagesRecyclerView(){
+    private void initImagesRecyclerView(ChordsShapesAdapter adapter){
         RecyclerView rvChordImages = getRvChordImages();
         rvChordImages.setHasFixedSize(true);
         rvChordImages.setItemAnimator(new DefaultItemAnimator());
         rvChordImages.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvChordImages.setAdapter(adapter);
     }
 
     public RecyclerView getRvChordImages() {

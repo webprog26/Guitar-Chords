@@ -2,6 +2,7 @@ package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
 
 import android.graphics.Point;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**

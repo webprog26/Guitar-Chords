@@ -1,13 +1,14 @@
 package com.example.webprog26.guitarchords;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
+import android.util.Log;
 
+import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordImageClickEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.SetChordSecondTitleEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.listeners.SpinnerListener;
 import com.example.webprog26.guitarchords.guitar_chords_engine.manager.ChordsManager;
 import com.example.webprog26.guitarchords.interfaces.SpinnerReseter;
@@ -20,6 +21,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements SpinnerReseter{
+
+    private static final String TAG = "MainActivity_TAG";
 
     private static final int SPINNER_DEFAULT_POSITION = 0;
 
@@ -41,15 +44,17 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        //Initializing ChordsManager instance
         mChordsManager = new ChordsManager(getSupportFragmentManager(),
                                            R.id.fl_content,
                                            MainActivity.this);
 
+        //Initializing SpinnerListener instance
         mSpinnerListener = new SpinnerListener(getChordsManager(), this);
 
-        getSpChordsTitles().setOnItemSelectedListener(getSpinnerListener());
-        getSpChordsTypes().setOnItemSelectedListener(getSpinnerListener());
-        getSpChordsParams().setOnItemSelectedListener(getSpinnerListener());
+        getSpChordsTitles().setOnItemSelectedListener(mSpinnerListener);
+        getSpChordsTypes().setOnItemSelectedListener(mSpinnerListener);
+        getSpChordsParams().setOnItemSelectedListener(mSpinnerListener);
 
     }
 
@@ -65,11 +70,32 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
         super.onStop();
     }
 
+    /**
+     * Handles {@link ChordImageClickEvent}. Starts {@link PlayChordActivity}
+     * with current chord as a parameter
+     * @param chordImageClickEvent {@link ChordImageClickEvent}
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChordImageClickEvent(ChordImageClickEvent chordImageClickEvent){
         Intent playChordIntent = new Intent(MainActivity.this, PlayChordActivity.class);
-        playChordIntent.putExtra(PlayChordActivity.CHORD_TO_PLAY, getChordsManager().getCurrentChord());
+        //Todo send to PlayChordActivity current shape, not the whole chord
+        ChordShape chordShape = chordImageClickEvent.getChordShape();
+        ChordsManager chordsManager = getChordsManager();
+
+        Log.i(TAG, chordShape.toString());
+
+
+        playChordIntent.putExtra(PlayChordActivity.SHAPE_TO_PLAY_POSITION, chordShape.getPosition());
+        playChordIntent.putExtra(PlayChordActivity.CHORD_TITLE, chordsManager.getCurrentChord().getChordTitle());
+        playChordIntent.putExtra(PlayChordActivity.CHORD_SECOND_TITLE, chordsManager.getChordSecondTitle());
+        playChordIntent.putExtra(PlayChordActivity.CHORD_SHAPES_TABLE_TITLE, chordsManager.getCurrentChord().getChordShapesTable());
         startActivity(playChordIntent);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSetChordSecondTitleEvent(SetChordSecondTitleEvent setChordSecondTitleEvent){
+        Log.i(TAG, "onSetChordSecondTitleEvent()");
+        mChordsManager.setChordSecondTitle(setChordSecondTitleEvent.getChord().getChordSecondTitle());
     }
 
     public AppCompatSpinner getSpChordsTitles() {

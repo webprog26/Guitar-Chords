@@ -1,5 +1,6 @@
 package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**

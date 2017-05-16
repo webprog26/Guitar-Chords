@@ -31,6 +31,8 @@ public class TransformJSONDataToPojosCommand implements Command {
     private static final String CHORD_SECOND_TITLE = "chord_second_title";
     private static final String CHORD_TYPE = "chord_type";
     private static final String CHORD_ALTERATION = "chord_alteration";
+
+    private static final String CHORD_SHAPES_TABLE = "chord_shapes_table";
     private static final String CHORD_SHAPES = "chord_shapes";
 
     private static final String SHAPE_POSITION = "shape_position";
@@ -182,7 +184,8 @@ public class TransformJSONDataToPojosCommand implements Command {
                                         singleChordsJsonObject.getString(CHORD_SECOND_TITLE),
                                         singleChordsJsonObject.getString(CHORD_TYPE),
                                         singleChordsJsonObject.getString(CHORD_ALTERATION),
-                                        chordShapes);
+                                        chordShapes,
+                                        singleChordsJsonObject.getString(CHORD_SHAPES_TABLE));
                             }
                             if(chord != null){
                                 Log.i(TAG, chord.toString());

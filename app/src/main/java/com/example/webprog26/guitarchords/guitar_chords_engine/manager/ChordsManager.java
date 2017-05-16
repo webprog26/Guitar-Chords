@@ -72,4 +72,12 @@ public class ChordsManager {
     private UIMessageHelper getUiMessageHelper() {
         return mUiMessageHelper;
     }
+
+    public String getChordSecondTitle() {
+        return getCurrentChord().getChordSecondTitle();
+    }
+
+    public void setChordSecondTitle(String chordSecondTitle) {
+        getCurrentChord().setChordSecondTitle(chordSecondTitle);
+    }
 }
