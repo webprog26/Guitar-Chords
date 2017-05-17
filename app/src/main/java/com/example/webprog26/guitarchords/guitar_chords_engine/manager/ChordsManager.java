@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.webprog26.guitarchords.fragments.dialogs.ReferenceDialog;
 import com.example.webprog26.guitarchords.guitar_chords_engine.commands.LoadChordFragmentCommand;
 import com.example.webprog26.guitarchords.guitar_chords_engine.commands.UIMessageCommand;
+import com.example.webprog26.guitarchords.guitar_chords_engine.commands.WrongChordUiMessageCommand;
 import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.UIMessageHelper;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
@@ -39,7 +40,7 @@ public class ChordsManager {
     }
 
     public void sendUiMessage(final Chord chord, final String toChord){
-        new UIMessageCommand(getUiMessageHelper(), chord, toChord).execute();
+        new WrongChordUiMessageCommand(getUiMessageHelper(), chord, toChord).execute();
     }
 
     public void showReference(String chordTitle){

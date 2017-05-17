@@ -30,18 +30,38 @@ public class UIMessageHelper {
      * @param fromChord {@link String}
      * @param toChord {@link String}
      */
-    //Todo make it more modulable and independent
-    public void sendUiMessage(final String fromChord, final String toChord){
+    public void sendUiWrongChordMessage(final String fromChord, final String toChord){
         final ChordsManager chordsManager = getChordsManager();
         final Context context = chordsManager.getContext();
 
-        Snackbar.make(getContextView(), context.getString(R.string.wrong_chord, fromChord, toChord), UI_MESSAGE_DURATION)
-                .setAction(context.getString(R.string.why), new View.OnClickListener() {
+        showSnackbarMessage(context.getString(R.string.wrong_chord, fromChord, toChord),
+                context.getString(R.string.why), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         chordsManager.showReference(fromChord);
                     }
-                }).show();
+                });
+    }
+
+    /**
+     * Shows snackbar message directly
+     * @param message {@link String}
+     * @param action {@link String}
+     * @param actionListener {@link android.view.View.OnClickListener}
+     */
+    private void showSnackbarMessage(String message, String action, View.OnClickListener actionListener){
+
+        Snackbar uiMessageSnackbar = Snackbar.make(getContextView(), message, UI_MESSAGE_DURATION);
+
+        if(action != null){
+            if(actionListener != null){
+                uiMessageSnackbar.setAction(action, actionListener);
+            } else {
+                uiMessageSnackbar.setAction(action, null);
+            }
+        }
+
+        uiMessageSnackbar.show();
     }
 
 
