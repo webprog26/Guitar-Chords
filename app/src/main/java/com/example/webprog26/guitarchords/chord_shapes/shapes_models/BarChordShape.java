@@ -1,12 +1,10 @@
 package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
 
 import android.graphics.Point;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by webpr on 15.05.2017.
+ * Bar chord shape model
  */
 
 public class BarChordShape extends ChordShape {
@@ -38,15 +36,7 @@ public class BarChordShape extends ChordShape {
         return mBarStartPoint;
     }
 
-    public void setBarStartPoint(Point barStartPoint) {
-        this.mBarStartPoint = barStartPoint;
-    }
-
     public Point getBarEndPoint() {
         return mBarEndPoint;
-    }
-
-    public void setBarEndPoint(Point barEndPoint) {
-        this.mBarEndPoint = barEndPoint;
     }
 }

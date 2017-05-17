@@ -5,7 +5,7 @@ import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import java.util.ArrayList;
 
 /**
- * Created by webpr on 16.05.2017.
+ * Runs when chord shapes has been loaded from {@link android.database.sqlite.SQLiteDatabase}
  */
 
 public class ShapesLoadedFromDatabaseEvent {

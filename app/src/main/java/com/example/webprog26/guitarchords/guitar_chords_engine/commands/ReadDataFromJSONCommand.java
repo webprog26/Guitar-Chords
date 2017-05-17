@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by webpr on 15.05.2017.
+ * This {@link Command} reads data from JSON file in assets directory
  */
 
 public class ReadDataFromJSONCommand implements Command {
@@ -32,7 +32,7 @@ public class ReadDataFromJSONCommand implements Command {
         EventBus.getDefault().post(new JSONDataHasBeenReadEvent(loadJSONFromAsset(getAssetManager(), JSON_FILE_NAME)));
     }
 
-    public AssetManager getAssetManager() {
+    private AssetManager getAssetManager() {
         return mAssetManager;
     }
 
@@ -58,6 +58,4 @@ public class ReadDataFromJSONCommand implements Command {
         }
         return json;
     }
-
-
 }

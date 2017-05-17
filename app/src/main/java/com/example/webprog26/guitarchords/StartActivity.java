@@ -1,6 +1,5 @@
 package com.example.webprog26.guitarchords;
 
-import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -11,13 +10,12 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.webprog26.guitarchords.app.GuitarChordsApp;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.commands.ReadDataFromJSONCommand;
 import com.example.webprog26.guitarchords.guitar_chords_engine.commands.TransformJSONDataToPojosCommand;
-import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsLoadedToDatabaseEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsUploadedToDatabaseEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.DataHasBeenTransformedToPOJOsEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.JSONDataHasBeenReadEvent;
-import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadDataToDatabaseEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.UploadDataToDatabaseEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ReadJSONDataFromAssetsEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
@@ -27,6 +25,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+/**
+ * Apps {@link StartActivity}
+ */
 
 public class StartActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -100,27 +102,27 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         for(Chord chord: dataHasBeenTransformedToPOJOsEvent.getChords()){
             Log.i(TAG, chord.toString());
         }
-        EventBus.getDefault().post(new LoadDataToDatabaseEvent(dataHasBeenTransformedToPOJOsEvent.getChords()));
+        EventBus.getDefault().post(new UploadDataToDatabaseEvent(dataHasBeenTransformedToPOJOsEvent.getChords()));
     }
 
     /**
-     * Handles {@link LoadDataToDatabaseEvent}. Starts inserting data to local
+     * Handles {@link UploadDataToDatabaseEvent}. Starts inserting data to local
      * {@link android.database.sqlite.SQLiteDatabase} instance
-     * @param loadDataToDatabaseEvent {@link LoadDataToDatabaseEvent}
+     * @param uploadDataToDatabaseEvent {@link UploadDataToDatabaseEvent}
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onLoadDataToDatabaseEvent(LoadDataToDatabaseEvent loadDataToDatabaseEvent){
+    public void onLoadDataToDatabaseEvent(UploadDataToDatabaseEvent uploadDataToDatabaseEvent){
         //Starting inserting data to local database
-        GuitarChordsApp.getDatabaseProvider().addChordsToDB(loadDataToDatabaseEvent.getChords());
+        GuitarChordsApp.getDatabaseProvider().addChordsToDB(uploadDataToDatabaseEvent.getChords());
     }
 
     /**
-     * Handles {@link ChordsLoadedToDatabaseEvent}. Writes marker to {@link SharedPreferences}
+     * Handles {@link ChordsUploadedToDatabaseEvent}. Writes marker to {@link SharedPreferences}
      * and makes resume-app's-work button enabled
-     * @param chordsLoadedToDatabaseEvent {@link ChordsLoadedToDatabaseEvent}
+     * @param chordsUploadedToDatabaseEvent {@link ChordsUploadedToDatabaseEvent}
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onChordsLoadedToDatabaseEvent(ChordsLoadedToDatabaseEvent chordsLoadedToDatabaseEvent){
+    public void onChordsLoadedToDatabaseEvent(ChordsUploadedToDatabaseEvent chordsUploadedToDatabaseEvent){
         Log.i(TAG, "onChordsLoadedToDatabaseEvent");
         //Writing marker to {@link SharedPreferences}
         getSharedPreferences().edit().putBoolean(ARE_CHORDS_SHAPES_BEEN_READ_TAG, true).apply();

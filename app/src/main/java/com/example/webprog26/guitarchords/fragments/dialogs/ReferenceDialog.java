@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * Created by webpr on 10.05.2017.
+ * Reference dialog
  */
 
 public class ReferenceDialog extends DialogFragment{

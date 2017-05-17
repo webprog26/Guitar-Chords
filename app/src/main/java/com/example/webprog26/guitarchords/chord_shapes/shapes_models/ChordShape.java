@@ -1,12 +1,10 @@
 package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
 
 import android.graphics.Bitmap;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by webpr on 15.05.2017.
+ * Basic chord shape model
  */
 
 public abstract class ChordShape {
@@ -40,56 +38,28 @@ public abstract class ChordShape {
         return mPosition;
     }
 
-    public void setPosition(int position) {
-        this.mPosition = position;
-    }
-
     public int getStartFretNumber() {
         return mStartFretNumber;
-    }
-
-    public void setStartFretNumber(int startFretNumber) {
-        this.mStartFretNumber = startFretNumber;
     }
 
     public ArrayList<Note> getNotes() {
         return mNotes;
     }
 
-    public void setNotes(ArrayList<Note> notes) {
-        this.mNotes = notes;
-    }
-
     public boolean isHasBar() {
         return hasBar;
-    }
-
-    public void setHasBar(boolean hasBar) {
-        this.hasBar = hasBar;
     }
 
     public String getImagePath() {
         return mImagePath;
     }
 
-    public void setImagePath(String mImageTitle) {
-        this.mImagePath = mImageTitle;
-    }
-
     public StringMutedHolder getStringMutedHolder() {
         return mStringMutedHolder;
     }
 
-    public void setStringMutedHolder(StringMutedHolder stringMutedHolder) {
-        this.mStringMutedHolder = stringMutedHolder;
-    }
-
     public boolean isHasMutedStrings() {
         return hasMutedStrings;
-    }
-
-    public void setHasMutedStrings(boolean hasMutedStrings) {
-        this.hasMutedStrings = hasMutedStrings;
     }
 
     @Override

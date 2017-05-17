@@ -8,6 +8,10 @@ import android.util.Log;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
+/**
+ * Apps {@link PlayChordActivity}
+ */
+
 public class PlayChordActivity extends AppCompatActivity {
 
     public static final String SHAPE_TO_PLAY_POSITION = "shape_to_play_position";
@@ -45,7 +49,6 @@ public class PlayChordActivity extends AppCompatActivity {
             if (chordShapesTableTitle != null) {
                 Log.i(TAG, chordShapesTableTitle);
             }
-
         }
     }
 }

@@ -9,9 +9,9 @@ import android.util.Log;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.BarChordShape;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.Note;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.StandartChordShape;
+import com.example.webprog26.guitarchords.chord_shapes.shapes_models.StandardChordShape;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.StringMutedHolder;
-import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsLoadedToDatabaseEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsUploadedToDatabaseEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
 import org.greenrobot.eventbus.EventBus;
@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 
 /**
- * Created by webpr on 15.05.2017.
+ * Chords and chords shapes database provider
  */
 
 public class DatabaseProvider {
@@ -48,10 +48,15 @@ public class DatabaseProvider {
         }
     }
 
-    public DatabaseHelper getDatabaseHelper() {
+    private DatabaseHelper getDatabaseHelper() {
         return mDatabaseHelper;
     }
 
+    /**
+     * Inserts {@link Chord} to local {@link android.database.sqlite.SQLiteDatabase}
+     * @param chord {@link Chord}
+     * @return long
+     */
     private long insertChordToDb(Chord chord){
         Log.i(TAG, "insertChordToDb() " + chord.getChordTitle());
         ContentValues contentValues = new ContentValues();
@@ -70,11 +75,16 @@ public class DatabaseProvider {
                 insertChordShapeToDb(chordShapesTableTitle, chordShape);
             }
         }
-        EventBus.getDefault().post(new ChordsLoadedToDatabaseEvent());
+        EventBus.getDefault().post(new ChordsUploadedToDatabaseEvent());
         return getDatabaseHelper().getWritableDatabase().insert(DatabaseHelper.CHORDS_TABLE, null, contentValues);
     }
 
 
+    /**
+     * Inserts {@link ChordShape} to local {@link android.database.sqlite.SQLiteDatabase}
+     * @param shapesTableTitle {@link String}
+     * @param chordShape {@link ChordShape}
+     */
     private void insertChordShapeToDb(String shapesTableTitle, ChordShape chordShape){
         Log.i(TAG, "insertChordShapeToDb() " + chordShape.getPosition() + " to table " + shapesTableTitle);
             Log.i(TAG, "shape has bar " + chordShape.isHasBar());
@@ -123,12 +133,18 @@ public class DatabaseProvider {
             getDatabaseHelper().getWritableDatabase().insert(shapesTableTitle, null, contentValues);
     }
 
+    /**
+     * Returns {@link ArrayList} of {@link ChordShape} instances
+     * stored in local to local {@link android.database.sqlite.SQLiteDatabase}
+     * @param chord {@link Chord}
+     * @return ArrayList
+     */
     public ArrayList<ChordShape> getChordShapes(final Chord chord){
-        String chordShapesTableTitle = getChordShapesTableTitle(chord);
+        String chordShapesTableTitle = ShapesTableTitleHelper.getChordShapesTableTitle(chord);
         Log.i(TAG, "getChordShapes ");
 
         ArrayList<ChordShape> chordShapes = new ArrayList<>();
-        ChordShape chordShape = null;
+        ChordShape chordShape;
 
         Cursor cursor = getDatabaseHelper().getReadableDatabase().query(chordShapesTableTitle,
                                                                         null,
@@ -174,7 +190,7 @@ public class DatabaseProvider {
 
                 );
             } else {
-                chordShape = new StandartChordShape(shapePosition,
+                chordShape = new StandardChordShape(shapePosition,
                         startFretNumber,
                         notes,
                         false,
@@ -189,6 +205,12 @@ public class DatabaseProvider {
         return chordShapes;
     }
 
+    /**
+     * Returns {@link ArrayList} of {@link ChordShape} {@link Note} instances
+     * @param tableTitle {@link String}
+     * @param shapePosition int
+     * @return ArrayList
+     */
     private ArrayList<Note> getNotes(String tableTitle, int shapePosition){
         ArrayList<Note> notes = new ArrayList<>();
 
@@ -216,17 +238,21 @@ public class DatabaseProvider {
         return notes;
     }
 
+    /**
+     * Transorms {@link String} value from {@link android.database.sqlite.SQLiteDatabase} to boolean
+     * @param s {@link String}
+     * @return boolean
+     */
     private boolean getBoolean(String s){
         return Boolean.parseBoolean(s);
     }
-    private String getChordShapesTableTitle(final Chord chord){
-        return chord.getChordTitle().toLowerCase()
-                + "_" + chord.getChordType().toLowerCase()
-                + "_" + chord.getChordAlteration().toLowerCase();
-    }
 
+    /**
+     * Fills {@link Chord} instance with it'second title
+     * @param chord {@link Chord}
+     * @return Chord
+     */
     public Chord getChordWithSecondTitle(Chord chord){
-//        String[] columns = new String[]{DatabaseHelper.CHORD_TITLE, DatabaseHelper.CHORD_TYPE, DatabaseHelper.CHORD_ALTERATION};
 
         String selection = DatabaseHelper.CHORD_TITLE + " = ? AND "
         + DatabaseHelper.CHORD_TYPE + " = ? AND " + DatabaseHelper.CHORD_ALTERATION + " = ?";
@@ -236,7 +262,6 @@ public class DatabaseProvider {
 
         while(cursor.moveToNext()){
             chord.setChordSecondTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CHORD_SECOND_TITLE)));
-            chord.setChordShapesTable(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CHORD_SHAPES_TABLE)));
         }
         cursor.close();
         return chord;

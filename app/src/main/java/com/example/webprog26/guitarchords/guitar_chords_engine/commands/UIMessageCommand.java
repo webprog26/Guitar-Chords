@@ -1,12 +1,10 @@
 package com.example.webprog26.guitarchords.guitar_chords_engine.commands;
 
-import android.content.Context;
-
 import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.UIMessageHelper;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
 /**
- * Created by webpr on 10.05.2017.
+ * This {@link Command} shows user messages via UIMessageHelper
  */
 
 public class UIMessageCommand implements Command {
@@ -26,7 +24,7 @@ public class UIMessageCommand implements Command {
         getUiMessageHelper().sendUiMessage(getFormattedMessage(getChord()), getToChord());
     }
 
-    public UIMessageHelper getUiMessageHelper() {
+    private UIMessageHelper getUiMessageHelper() {
         return mUiMessageHelper;
     }
 
@@ -50,7 +48,7 @@ public class UIMessageCommand implements Command {
         return stringBuilder.toString();
     }
 
-    public String getToChord() {
+    private String getToChord() {
         return mToChord;
     }
 }

@@ -1,15 +1,14 @@
 package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by webpr on 15.05.2017.
+ * Standard chord shape model
  */
 
-public class StandartChordShape extends ChordShape {
+public class StandardChordShape extends ChordShape {
 
-    public StandartChordShape(int mPosition,
+    public StandardChordShape(int mPosition,
                               int mStartFretNumber,
                               ArrayList<Note> mNotes,
                               boolean hasBar,

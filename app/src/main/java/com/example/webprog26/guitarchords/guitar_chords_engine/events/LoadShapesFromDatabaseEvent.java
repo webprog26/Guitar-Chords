@@ -3,10 +3,8 @@ package com.example.webprog26.guitarchords.guitar_chords_engine.events;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
-import java.util.ArrayList;
-
 /**
- * Created by webpr on 16.05.2017.
+ * Runs when chord shapes should be loaded from {@link android.database.sqlite.SQLiteDatabase}
  */
 
 public class LoadShapesFromDatabaseEvent {

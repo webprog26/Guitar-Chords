@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by webprog26 on 09.05.2017.
+ * Chord model
  */
 
 public class Chord implements Serializable{

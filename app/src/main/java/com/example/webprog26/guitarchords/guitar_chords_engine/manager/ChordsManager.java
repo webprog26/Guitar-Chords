@@ -3,8 +3,6 @@ package com.example.webprog26.guitarchords.guitar_chords_engine.manager;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.View;
-
 import com.example.webprog26.guitarchords.fragments.dialogs.ReferenceDialog;
 import com.example.webprog26.guitarchords.guitar_chords_engine.commands.LoadChordFragmentCommand;
 import com.example.webprog26.guitarchords.guitar_chords_engine.commands.UIMessageCommand;
@@ -12,7 +10,7 @@ import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.UIMessage
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
 /**
- * Created by webprog26 on 09.05.2017.
+ * Chords manager
  */
 
 public class ChordsManager {

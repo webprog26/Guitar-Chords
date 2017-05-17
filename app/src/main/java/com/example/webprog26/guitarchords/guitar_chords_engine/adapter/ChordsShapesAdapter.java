@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by webpr on 16.05.2017.
+ * Chord shapes adapter
  */
 
 public class ChordsShapesAdapter extends RecyclerView.Adapter<ChordsShapesAdapter.ChordShapesViewholder>{
@@ -85,7 +85,7 @@ public class ChordsShapesAdapter extends RecyclerView.Adapter<ChordsShapesAdapte
         }
     }
 
-    public void setChordShapesList(ArrayList<ChordShape> chordShapes) {
+    private void setChordShapesList(ArrayList<ChordShape> chordShapes) {
         this.mChordShapesList = chordShapes;
     }
 

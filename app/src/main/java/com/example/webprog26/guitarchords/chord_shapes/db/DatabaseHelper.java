@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by webpr on 15.05.2017.
+ * Chords and chords shapes database creator
  */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CHORD_SHAPES_TABLE = "chord_shapes_table";
 
     //Chords shapes tables titles
-    public static final String C_MAJ_ORDINARY_SHAPES = "c_maj_ordinary";
+    private static final String C_MAJ_ORDINARY_SHAPES = "c_maj_ordinary";
 
     //Chord shape table columns
     public static final String SHAPE_ID = "_id";

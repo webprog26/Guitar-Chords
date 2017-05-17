@@ -5,7 +5,7 @@ import android.app.Application;
 import com.example.webprog26.guitarchords.chord_shapes.db.DatabaseProvider;
 
 /**
- * Created by webpr on 15.05.2017.
+ * {@link Application} class to create single {@link DatabaseProvider} instance
  */
 
 public class GuitarChordsApp extends Application {

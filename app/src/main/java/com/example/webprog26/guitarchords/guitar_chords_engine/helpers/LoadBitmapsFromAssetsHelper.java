@@ -7,10 +7,9 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 /**
- * Helper class to load chord images from specific directory in assets
+ * Helper class to load chord shapes images from specific directory in assets
  */
 
 public class LoadBitmapsFromAssetsHelper {
@@ -42,62 +41,6 @@ public class LoadBitmapsFromAssetsHelper {
             }
         }
 
-        return bitmap;
-    }
-
-    /**
-     * Loads ArrayList of chord's images via given path and loadBitmapFromAssets() method
-     * @param assetManager {@link AssetManager}
-     * @param dirName {@link String}
-     * @return ArrayList
-     */
-    private static ArrayList<Bitmap> getBitmapsFromAssets(AssetManager assetManager, String dirName){
-
-        ArrayList<Bitmap> bitmaps = new ArrayList<>();
-
-        try {
-            String[] fileNames = assetManager.list(dirName);
-
-            for(String fileName: fileNames){
-
-                Bitmap bitmap = loadBitmapFromAssets(assetManager, dirName + "/" + fileName);
-                if(bitmap != null){
-                    bitmaps.add(bitmap);
-                }
-            }
-        } catch (IOException ioe){
-            ioe.printStackTrace();
-        }
-
-        return bitmaps;
-    }
-
-    /**
-     * Loads ArrayList of chord's images via given path
-     * @param assetManager {@link AssetManager}
-     * @param path {@link String}
-     * @return ArrayList
-     */
-    public static ArrayList<Bitmap> getBitmaps(AssetManager assetManager, String path){
-        return getBitmapsFromAssets(assetManager, path);
-    }
-
-    public static Bitmap getBitmapFromAsset(AssetManager mgr, String path) {
-        InputStream is = null;
-        Bitmap bitmap = null;
-        try {
-            is = mgr.open(path);
-            bitmap = BitmapFactory.decodeStream(is);
-        } catch (final IOException e) {
-            bitmap = null;
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignored) {
-                }
-            }
-        }
         return bitmap;
     }
 }

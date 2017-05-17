@@ -1,7 +1,7 @@
 package com.example.webprog26.guitarchords.guitar_chords_engine.events;
 
 /**
- * Created by webpr on 15.05.2017.
+ * Runs when data has been read from .json file in assets directory
  */
 
 public class JSONDataHasBeenReadEvent {

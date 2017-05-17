@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * Fragment to host {@link RecyclerView} with chosen chord images
+ * Fragment to host {@link RecyclerView} with chosen chord shapes
  */
 
 public class ChordFragment extends Fragment {
@@ -49,7 +49,6 @@ public class ChordFragment extends Fragment {
     RecyclerView mRvChordImages;
 
     private Unbinder unbinder;
-    private DatabaseProvider mDatabaseProvider;
     private ChordsShapesAdapter mChordsShapesAdapter;
 
 
@@ -71,15 +70,20 @@ public class ChordFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        mDatabaseProvider = GuitarChordsApp.getDatabaseProvider();
+
         if(getArguments() != null){
+            //Getting Chord instance with user params
             final Chord chord = (Chord) getArguments().getSerializable(CHORD);
 
             if(chord != null){
+
+                //Asking DatabaseProvider for Chord's second title and chord shapes table title
                 EventBus.getDefault().post(new FillChordWithDataEvent(chord));
 
+                //Initialing adapter with empty data
                 mChordsShapesAdapter = new ChordsShapesAdapter(chord.getChordShapes(), getActivity());
 
+                //Asking DatabaseProvider for the chord shapes
                 EventBus.getDefault().post(new LoadShapesFromDatabaseEvent(chord));
             }
         }
@@ -90,23 +94,16 @@ public class ChordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chord_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-        initImagesRecyclerView(mChordsShapesAdapter);
+        //Initialing RecyclerView
+        initImagesRecyclerView();
 
         return view;
-    }
-
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-
     }
 
     @Override
@@ -115,12 +112,20 @@ public class ChordFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * Handles {@link LoadShapesFromDatabaseEvent}. Loads shapes from local {@link android.database.sqlite.SQLiteDatabase}
+     * @param loadShapesFromDatabaseEvent {@link LoadShapesFromDatabaseEvent}
+     */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onLoadShapesFromDatabaseEvent(LoadShapesFromDatabaseEvent loadShapesFromDatabaseEvent){
-        final ArrayList<ChordShape> chordShapes = mDatabaseProvider.getChordShapes(loadShapesFromDatabaseEvent.getChord());
+        final ArrayList<ChordShape> chordShapes = getDatabaseProvider().getChordShapes(loadShapesFromDatabaseEvent.getChord());
                 EventBus.getDefault().post(new ShapesLoadedFromDatabaseEvent(chordShapes));
     }
 
+    /**
+     * Handles {@link ShapesLoadedFromDatabaseEvent}. Adds bitmap chord shape image to every {@link ChordShape}
+     * @param shapesLoadedFromDatabaseEvent {@link ShapesLoadedFromDatabaseEvent}
+     */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onShapesLoadedFromDatabaseEvent(ShapesLoadedFromDatabaseEvent shapesLoadedFromDatabaseEvent){
         ArrayList<ChordShape> chordShapes = shapesLoadedFromDatabaseEvent.getChordShapes();
@@ -134,26 +139,45 @@ public class ChordFragment extends Fragment {
         EventBus.getDefault().post(new ChordsShapesReadyWithImagesEvent(chordShapes));
     }
 
+    /**
+     * Handles {@link ChordsShapesReadyWithImagesEvent}. Updates {@link ChordsShapesAdapter} with shapes
+     * loaded from {@link android.database.sqlite.SQLiteDatabase}
+     * @param chordsShapesReadyWithImagesEvent {@link ChordsShapesReadyWithImagesEvent}
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChordsShapesReadyWithImagesEvent(ChordsShapesReadyWithImagesEvent chordsShapesReadyWithImagesEvent){
-        mChordsShapesAdapter.updateAdapterData(chordsShapesReadyWithImagesEvent.getChordShapes());
+        getChordsShapesAdapter().updateAdapterData(chordsShapesReadyWithImagesEvent.getChordShapes());
     }
 
+    /**
+     * Handles {@link FillChordWithDataEvent}. Notifies {@link com.example.webprog26.guitarchords.MainActivity}
+     * (parent activity of the fragment) to store chord data
+     * via {@link com.example.webprog26.guitarchords.guitar_chords_engine.manager.ChordsManager}
+     * @param fillChordWithDataEvent {@link FillChordWithDataEvent}
+     */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onFillChordWithDataEvent(FillChordWithDataEvent fillChordWithDataEvent){
-        final Chord chordWithSecondTitle = mDatabaseProvider.getChordWithSecondTitle(fillChordWithDataEvent.getChord());
+        final Chord chordWithSecondTitle = getDatabaseProvider().getChordWithSecondTitle(fillChordWithDataEvent.getChord());
         EventBus.getDefault().post(new SetChordSecondTitleEvent(chordWithSecondTitle));
     }
 
     /**
      * Initializes chord images {@link RecyclerView} with necessary params
      */
-    private void initImagesRecyclerView(ChordsShapesAdapter adapter){
+    private void initImagesRecyclerView(){
         RecyclerView rvChordImages = getRvChordImages();
         rvChordImages.setHasFixedSize(true);
         rvChordImages.setItemAnimator(new DefaultItemAnimator());
         rvChordImages.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvChordImages.setAdapter(adapter);
+        rvChordImages.setAdapter(getChordsShapesAdapter());
+    }
+
+    public DatabaseProvider getDatabaseProvider() {
+        return GuitarChordsApp.getDatabaseProvider();
+    }
+
+    public ChordsShapesAdapter getChordsShapesAdapter() {
+        return mChordsShapesAdapter;
     }
 
     public RecyclerView getRvChordImages() {

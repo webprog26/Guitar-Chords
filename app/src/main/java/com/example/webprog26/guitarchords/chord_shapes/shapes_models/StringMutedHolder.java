@@ -1,12 +1,10 @@
 package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
 
-import java.io.Serializable;
-
 /**
- * Created by webpr on 15.05.2017.
+ * Muted strings state holder
  */
 
-public class StringMutedHolder implements Serializable{
+public class StringMutedHolder {
 
     private boolean sixthStringMuted = false;
     private boolean fifthStringMuted = false;

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 
+import com.example.webprog26.guitarchords.chord_shapes.db.ShapesTableTitleHelper;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordImageClickEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.SetChordSecondTitleEvent;
@@ -19,6 +20,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+/**
+ * Apps {@link MainActivity}
+ */
 
 public class MainActivity extends AppCompatActivity implements SpinnerReseter{
 
@@ -83,12 +88,12 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
         ChordsManager chordsManager = getChordsManager();
 
         Log.i(TAG, chordShape.toString());
-
+        Log.i(TAG, "shapes table title " + ShapesTableTitleHelper.getChordShapesTableTitle(chordsManager.getCurrentChord()));
 
         playChordIntent.putExtra(PlayChordActivity.SHAPE_TO_PLAY_POSITION, chordShape.getPosition());
         playChordIntent.putExtra(PlayChordActivity.CHORD_TITLE, chordsManager.getCurrentChord().getChordTitle());
         playChordIntent.putExtra(PlayChordActivity.CHORD_SECOND_TITLE, chordsManager.getChordSecondTitle());
-        playChordIntent.putExtra(PlayChordActivity.CHORD_SHAPES_TABLE_TITLE, chordsManager.getCurrentChord().getChordShapesTable());
+        playChordIntent.putExtra(PlayChordActivity.CHORD_SHAPES_TABLE_TITLE, ShapesTableTitleHelper.getChordShapesTableTitle(chordsManager.getCurrentChord()));
         startActivity(playChordIntent);
     }
 

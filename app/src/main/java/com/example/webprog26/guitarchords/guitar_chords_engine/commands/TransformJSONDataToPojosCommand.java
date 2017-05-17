@@ -6,7 +6,7 @@ import android.util.Log;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.BarChordShape;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.Note;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.StandartChordShape;
+import com.example.webprog26.guitarchords.chord_shapes.shapes_models.StandardChordShape;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.StringMutedHolder;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.DataHasBeenTransformedToPOJOsEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by webpr on 15.05.2017.
+ * This {@link Command} transforms JSON data to POJO classes
  */
 
 public class TransformJSONDataToPojosCommand implements Command {
@@ -72,10 +72,13 @@ public class TransformJSONDataToPojosCommand implements Command {
         transformDataToPOJOs();
     }
 
-    public String getJsonString() {
+    private String getJsonString() {
         return mJsonString;
     }
 
+    /**
+     * Transforms JSON data to POJO classes
+     */
     private void transformDataToPOJOs(){
         Log.i(TAG, "transformDataToPOJOs()");
         ArrayList<Chord> chords = new ArrayList<>();
@@ -99,7 +102,7 @@ public class TransformJSONDataToPojosCommand implements Command {
                 }
 
                 if(chordsJsonArray != null){
-                    JSONObject singleChordsJsonObject = null;
+                    JSONObject singleChordsJsonObject;
 
                     try {
                         for(int i = 0; i < chordsJsonArray.length(); i++){
@@ -116,7 +119,7 @@ public class TransformJSONDataToPojosCommand implements Command {
 
                                     JSONObject chordShapeJsonObject = chordShapesJsonArray.getJSONObject(j);
 
-                                    ChordShape chordShape = null;
+                                    ChordShape chordShape;
 
                                     JSONArray shapeNotesJsonArray = chordShapeJsonObject.getJSONArray(SHAPE_NOTES);
                                     ArrayList<Note> notes = new ArrayList<>();
@@ -167,7 +170,7 @@ public class TransformJSONDataToPojosCommand implements Command {
                                                         chordShapeJsonObject.getInt(END_BAR_POINT_Y)));
 
                                     } else {
-                                        chordShape = new StandartChordShape(shapePosition,
+                                        chordShape = new StandardChordShape(shapePosition,
                                                 shapeStartFretPosition,
                                                 notes,
                                                 false,
@@ -200,7 +203,7 @@ public class TransformJSONDataToPojosCommand implements Command {
                 }
             }
         }
-
+        //Notifies com.example.webprog26.guitarchords.StartActivity that data has been transformed
         EventBus.getDefault().post(new DataHasBeenTransformedToPOJOsEvent(chords));
     }
 }

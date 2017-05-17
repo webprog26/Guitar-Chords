@@ -9,7 +9,7 @@ import com.example.webprog26.guitarchords.R;
 import com.example.webprog26.guitarchords.guitar_chords_engine.manager.ChordsManager;
 
 /**
- * Created by webpr on 10.05.2017.
+ * Helper class to show user messages via {@link Snackbar}
  */
 
 public class UIMessageHelper {
@@ -25,6 +25,12 @@ public class UIMessageHelper {
         this.mContextView = ((Activity) chordsManager.getContext()).findViewById(chordsManager.getContainerViewId());
     }
 
+    /**
+     * Shows user message
+     * @param fromChord {@link String}
+     * @param toChord {@link String}
+     */
+    //Todo make it more modulable and independent
     public void sendUiMessage(final String fromChord, final String toChord){
         final ChordsManager chordsManager = getChordsManager();
         final Context context = chordsManager.getContext();

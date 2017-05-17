@@ -5,7 +5,7 @@ import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 import java.util.ArrayList;
 
 /**
- * Created by webpr on 15.05.2017.
+ * Runs when data has been transformed to POJOs
  */
 
 public class DataHasBeenTransformedToPOJOsEvent {
