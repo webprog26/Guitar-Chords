@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.example.webprog26.guitarchords.R;
-import com.example.webprog26.guitarchords.guitar_chords_engine.manager.ChordsManager;
+import com.example.webprog26.guitarchords.guitar_chords_engine.managers.ChordsManager;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 import com.example.webprog26.guitarchords.interfaces.SpinnerReseter;
 

@@ -152,7 +152,7 @@ public class ChordFragment extends Fragment {
     /**
      * Handles {@link FillChordWithDataEvent}. Notifies {@link com.example.webprog26.guitarchords.MainActivity}
      * (parent activity of the fragment) to store chord data
-     * via {@link com.example.webprog26.guitarchords.guitar_chords_engine.manager.ChordsManager}
+     * via {@link com.example.webprog26.guitarchords.guitar_chords_engine.managers.ChordsManager}
      * @param fillChordWithDataEvent {@link FillChordWithDataEvent}
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

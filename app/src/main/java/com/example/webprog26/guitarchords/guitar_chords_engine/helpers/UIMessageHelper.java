@@ -6,7 +6,8 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.example.webprog26.guitarchords.R;
-import com.example.webprog26.guitarchords.guitar_chords_engine.manager.ChordsManager;
+import com.example.webprog26.guitarchords.guitar_chords_engine.managers.ChordsManager;
+import com.example.webprog26.guitarchords.guitar_chords_engine.managers.GuitarChordsManager;
 
 /**
  * Helper class to show user messages via {@link Snackbar}
@@ -15,14 +16,14 @@ import com.example.webprog26.guitarchords.guitar_chords_engine.manager.ChordsMan
 public class UIMessageHelper {
 
     private final View mContextView;
-    private final ChordsManager mChordsManager;
+    private final GuitarChordsManager mGuitarChordsManager;
 
     private static final int UI_MESSAGE_DURATION = 5000;
 
-    public UIMessageHelper(ChordsManager chordsManager) {
-        this.mChordsManager = chordsManager;
+    public UIMessageHelper(GuitarChordsManager guitarChordsManager) {
+        this.mGuitarChordsManager = guitarChordsManager;
 
-        this.mContextView = ((Activity) chordsManager.getContext()).findViewById(chordsManager.getContainerViewId());
+        this.mContextView = ((Activity) guitarChordsManager.getContext()).findViewById(guitarChordsManager.getContainerViewId());
     }
 
     /**
@@ -31,7 +32,7 @@ public class UIMessageHelper {
      * @param toChord {@link String}
      */
     public void sendUiWrongChordMessage(final String fromChord, final String toChord){
-        final ChordsManager chordsManager = getChordsManager();
+        final GuitarChordsManager chordsManager = getChordsManager();
         final Context context = chordsManager.getContext();
 
         showSnackbarMessage(context.getString(R.string.wrong_chord, fromChord, toChord),
@@ -70,7 +71,7 @@ public class UIMessageHelper {
         return mContextView;
     }
 
-    private ChordsManager getChordsManager() {
-        return mChordsManager;
+    private GuitarChordsManager getChordsManager() {
+        return mGuitarChordsManager;
     }
 }

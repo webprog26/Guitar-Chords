@@ -261,7 +261,12 @@ public class DatabaseProvider {
         Cursor cursor = getDatabaseHelper().getReadableDatabase().query(DatabaseHelper.CHORDS_TABLE, null, selection, selectionArgs, null, null, DatabaseHelper.CHORD_ID);
 
         while(cursor.moveToNext()){
-            chord.setChordSecondTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CHORD_SECOND_TITLE)));
+            String chordSecondTitle = cursor.getString(cursor.getColumnIndex(DatabaseHelper.CHORD_SECOND_TITLE));
+            if(chordSecondTitle.equalsIgnoreCase("null")){
+                chord.setChordSecondTitle(null);
+            } else {
+                chord.setChordSecondTitle(chordSecondTitle);
+            }
         }
         cursor.close();
         return chord;

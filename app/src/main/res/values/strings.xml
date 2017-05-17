@@ -8,6 +8,12 @@
     <string name="reference">Reference</string>
     <string name="reference_text">Reference for %1$s</string>
 
+    <string name="chord_with_one_title">Chord title: %1$s</string>
+    <string name="chord_with_two_titles">Chord title: %1$s (%2$s)</string>
+
+    <string name="btn_next">Next</string>
+    <string name="btn_previous">Prev</string>
+
     <!--Chords titles-->
     <string-array name="chords_titles">
         <item>C</item>

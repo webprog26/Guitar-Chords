@@ -8,10 +8,11 @@ import android.util.Log;
 
 import com.example.webprog26.guitarchords.chord_shapes.db.ShapesTableTitleHelper;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
+import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordImageClickEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.SetChordSecondTitleEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.listeners.SpinnerListener;
-import com.example.webprog26.guitarchords.guitar_chords_engine.manager.ChordsManager;
+import com.example.webprog26.guitarchords.guitar_chords_engine.managers.ChordsManager;
 import com.example.webprog26.guitarchords.interfaces.SpinnerReseter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -90,10 +91,14 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
         Log.i(TAG, chordShape.toString());
         Log.i(TAG, "shapes table title " + ShapesTableTitleHelper.getChordShapesTableTitle(chordsManager.getCurrentChord()));
 
-        playChordIntent.putExtra(PlayChordActivity.SHAPE_TO_PLAY_POSITION, chordShape.getPosition());
-        playChordIntent.putExtra(PlayChordActivity.CHORD_TITLE, chordsManager.getCurrentChord().getChordTitle());
-        playChordIntent.putExtra(PlayChordActivity.CHORD_SECOND_TITLE, chordsManager.getChordSecondTitle());
-        playChordIntent.putExtra(PlayChordActivity.CHORD_SHAPES_TABLE_TITLE, ShapesTableTitleHelper.getChordShapesTableTitle(chordsManager.getCurrentChord()));
+        PlayableShape playableShape = new PlayableShape(
+                chordsManager.getCurrentChord().getChordTitle(),
+                chordsManager.getChordSecondTitle(),
+                ShapesTableTitleHelper.getChordShapesTableTitle(chordsManager.getCurrentChord()),
+                chordShape.getPosition()
+        );
+
+        playChordIntent.putExtra(PlayChordActivity.ACTIVITY_PLAYABLE_SHAPE, playableShape);
         startActivity(playChordIntent);
     }
 
