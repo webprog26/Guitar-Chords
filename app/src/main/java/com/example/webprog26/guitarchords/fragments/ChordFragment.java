@@ -75,11 +75,13 @@ public class ChordFragment extends Fragment {
         if(getArguments() != null){
             final Chord chord = (Chord) getArguments().getSerializable(CHORD);
 
-            EventBus.getDefault().post(new FillChordWithDataEvent(chord));
+            if(chord != null){
+                EventBus.getDefault().post(new FillChordWithDataEvent(chord));
 
-            mChordsShapesAdapter = new ChordsShapesAdapter(chord.getChordShapes(), getActivity());
+                mChordsShapesAdapter = new ChordsShapesAdapter(chord.getChordShapes(), getActivity());
 
-            EventBus.getDefault().post(new LoadShapesFromDatabaseEvent(chord));
+                EventBus.getDefault().post(new LoadShapesFromDatabaseEvent(chord));
+            }
         }
     }
 
@@ -88,7 +90,7 @@ public class ChordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chord_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-
+        initImagesRecyclerView(mChordsShapesAdapter);
 
         return view;
     }
@@ -134,10 +136,7 @@ public class ChordFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChordsShapesReadyWithImagesEvent(ChordsShapesReadyWithImagesEvent chordsShapesReadyWithImagesEvent){
-
         mChordsShapesAdapter.updateAdapterData(chordsShapesReadyWithImagesEvent.getChordShapes());
-
-        initImagesRecyclerView(mChordsShapesAdapter);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

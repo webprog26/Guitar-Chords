@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChordImageClickEvent(ChordImageClickEvent chordImageClickEvent){
         Intent playChordIntent = new Intent(MainActivity.this, PlayChordActivity.class);
-        //Todo send to PlayChordActivity current shape, not the whole chord
+
         ChordShape chordShape = chordImageClickEvent.getChordShape();
         ChordsManager chordsManager = getChordsManager();
 
