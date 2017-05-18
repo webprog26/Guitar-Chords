@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.ChordTitleFromPlayableShapeGetter;
+import com.example.webprog26.guitarchords.guitar_chords_engine.interfaces.PlayChordActivityControlsEnabler;
+import com.example.webprog26.guitarchords.guitar_chords_engine.listeners.ShapesControlButtonsListener;
 import com.example.webprog26.guitarchords.guitar_chords_engine.managers.PlayableShapeManager;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.ChordTitlesHolder;
 
@@ -16,14 +19,12 @@ import butterknife.ButterKnife;
  * Apps {@link PlayChordActivity}
  */
 
-public class PlayChordActivity extends AppCompatActivity {
+public class PlayChordActivity extends AppCompatActivity implements PlayChordActivityControlsEnabler{
 
     public static final String ACTIVITY_PLAYABLE_SHAPE_POSITION = "activity_playable_shape_position";
     public static final String ACTIVITY_CHORD_TITLE = "activity_chord_title";
 
     private static final String TAG = "PlayActivity_TAG";
-
-    private static final int SHAPES_PER_CHORD_COUNT = 5;
 
     @BindView(R.id.tv_chord_title)
     TextView mTvChordTitle;
@@ -33,6 +34,7 @@ public class PlayChordActivity extends AppCompatActivity {
     Button mBtnPrevious;
 
     private PlayableShapeManager mPlayableShapeManager;
+    private ShapesControlButtonsListener mShapesControlButtonsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +51,12 @@ public class PlayChordActivity extends AppCompatActivity {
            if(chordTitlesHolder != null){
 
                if(playableShapePosition != -1){
-                   getTvChordTitle().setText(getChordTitleFromPlayableShape(chordTitlesHolder));
+                   getTvChordTitle().setText(new ChordTitleFromPlayableShapeGetter(this).getChordTitleFromPlayableShape(chordTitlesHolder));
                    mPlayableShapeManager = new PlayableShapeManager(getSupportFragmentManager(),
                            R.id.play_chord_activity_content,
                            this,
-                           playableShapePosition);
+                           playableShapePosition,
+                           this);
 
                    if(savedInstanceState == null) {
                        mPlayableShapeManager.setPlayableShapeFragment();
@@ -61,13 +64,12 @@ public class PlayChordActivity extends AppCompatActivity {
                }
            }
         }
-    }
 
-    private String getChordTitleFromPlayableShape(ChordTitlesHolder chordTitlesHolder){
-        if(chordTitlesHolder.getChordSecondTitle() == null){
-            return getString(R.string.chord_with_one_title, chordTitlesHolder.getChordTitle());
+        if(mPlayableShapeManager != null){
+            mShapesControlButtonsListener = new ShapesControlButtonsListener(mPlayableShapeManager);
+            getBtnNext().setOnClickListener(mShapesControlButtonsListener);
+            getBtnPrevious().setOnClickListener(mShapesControlButtonsListener);
         }
-        return getString(R.string.chord_with_two_titles, chordTitlesHolder.getChordTitle(), chordTitlesHolder.getChordSecondTitle());
     }
 
     private TextView getTvChordTitle() {
@@ -80,6 +82,16 @@ public class PlayChordActivity extends AppCompatActivity {
 
     private Button getBtnPrevious() {
         return mBtnPrevious;
+    }
+
+    @Override
+    public void setNextPlayableShapeButtonEnabled(boolean enabled) {
+        getBtnNext().setEnabled(enabled);
+    }
+
+    @Override
+    public void setPreviousPlayableShapeButtonEnabled(boolean enabled) {
+        getBtnPrevious().setEnabled(enabled);
     }
 }
 
