@@ -27,7 +27,7 @@ public class WrongChordUiMessageCommand extends UIMessageCommand {
             stringBuilder.append(chord.getChordType());
         }
 
-        if(!chord.getChordAlteration().equalsIgnoreCase(Chord.NO_PARAM)){
+        if(!chord.getChordAlteration().equalsIgnoreCase(Chord.NO_ALTERATION)){
             stringBuilder.append(chord.getChordAlteration());
         }
 

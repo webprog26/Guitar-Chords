@@ -6,7 +6,7 @@ import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 import com.example.webprog26.guitarchords.fragments.ChordFragment;
 
 /**
- * This {@link Command} loads next {@link ChordFragment} every time when user changes chord's params with spinners
+ * This {@link Command} loads next {@link ChordFragment} every time when user changes chord's params with layout_spinners
  */
 
 public abstract class LoadFragmentCommand implements Command {

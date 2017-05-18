@@ -1,20 +1,23 @@
 package com.example.webprog26.guitarchords.guitar_chords_engine.listeners;
 
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.example.webprog26.guitarchords.R;
+import com.example.webprog26.guitarchords.guitar_chords_engine.interfaces.SpinnerReseter;
 import com.example.webprog26.guitarchords.guitar_chords_engine.managers.ChordsManager;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
-import com.example.webprog26.guitarchords.interfaces.SpinnerReseter;
 
 /**
- * Listener for user interaction with spinners
+ * Listener for user interaction with layout_spinners
  */
 
-public class SpinnerListener implements AdapterView.OnItemSelectedListener {
+public class SpinnerListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener{
 
     private static final String TAG = "SpinnerListener";
+    private boolean isBlocked;
 
     private static final String EMPTY_POSITION = "--";
 
@@ -33,43 +36,48 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener {
     private static final int H_POSITION = 7;
     private static final int E_POSITION = 2;
 
-
-    private final ChordsManager mChordsManager;
     private final SpinnerReseter mSpinnerReseter;
-    //Empty Chord instance to ctore parameters chosen vy user via spinners
+    private final ChordsManager mChordsManager;
+    //Empty Chord instance to ctore parameters chosen vy user via layout_spinners
     private Chord mChord = new Chord();
 
     public SpinnerListener(ChordsManager chordsManager, SpinnerReseter spinnerReseter) {
         this.mChordsManager = chordsManager;
         this.mSpinnerReseter = spinnerReseter;
+        setBlocked(true);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        setBlocked(false);
+        return false;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        Log.i(TAG, "onItemSelected");
         Chord chord = getChord();
+        chord.setChordType(Chord.NO_TYPE);
+        chord.setChordAlteration(Chord.NO_ALTERATION);
 
 
         switch (adapterView.getId()){
-           case R.id.sp_chords_titles:
+           case R.id.sp_chord_title:
                chord.setChordTitle(adapterView.getSelectedItem().toString());
                break;
-           case R.id.sp_chords_types:
-
+           case R.id.sp_chord_type:
                 if(!adapterView.getSelectedItem().toString().equalsIgnoreCase(EMPTY_POSITION)){
                     chord.setChordType(adapterView.getSelectedItem().toString());
-                } else {
-                    chord.setChordType(Chord.NO_TYPE);
                 }
                break;
-            case R.id.sp_chords_params:
-                if(!adapterView.getSelectedItem().toString().equalsIgnoreCase(EMPTY_POSITION)){
+            case R.id.sp_chord_alteration:
+                if(!adapterView.getSelectedItem().toString().equalsIgnoreCase(EMPTY_POSITION)) {
                     chord.setChordAlteration(adapterView.getSelectedItem().toString());
-                } else {
-                    chord.setChordAlteration(Chord.NO_PARAM);
                 }
                 break;
        }
+        Log.i(TAG, "isBlocked(): " + isBlocked());
+        if(!isBlocked){
 
         if(chord.getChordTitle() != null && chord.getChordType() != null && chord.getChordAlteration() != null){
 
@@ -108,21 +116,22 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener {
                 }
             }
 
-//            if(toChord != null && toPosition != -1){
+
             if(toChord != null){
                 getChordsManager().sendUiMessage(chord, toChord);
                 changeChordTitleAndResetParams(toChord, toPosition);
             }
 
-            getChordsManager().setFragmentWithListOfChordImages(getChord());
+                   Log.i(TAG, "Loading fragment ");
+                   getChordsManager().setFragmentWithListOfChordImages(getChord());
+                   setBlocked(true);
+               }
         }
-
-
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        //
+        Log.i(TAG, "onNothingSelected");
     }
 
 
@@ -134,19 +143,28 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener {
         return mChordsManager;
     }
 
-    private SpinnerReseter getSpinnerReseter() {
-        return mSpinnerReseter;
-    }
 
     /**
-     * In case of chosing unexisting chord resets spinners and changes user selection to right chord
+     * In case of chosing unexisting chord resets layout_spinners and changes user selection to right chord
      * @param chordTitle {@link String}
      * @param position int
      */
     private void changeChordTitleAndResetParams(final String chordTitle, final int position){
         getChord().setChordTitle(chordTitle);
-        getChord().setChordAlteration(Chord.NO_PARAM);
+        getChord().setChordAlteration(Chord.NO_ALTERATION);
         getSpinnerReseter().resetChordsParamsSpinner();
         getSpinnerReseter().setChordsTitleSpinnerPosition(position);
+    }
+
+    public SpinnerReseter getSpinnerReseter() {
+        return mSpinnerReseter;
+    }
+
+    private boolean isBlocked() {
+        return isBlocked;
+    }
+
+    private void setBlocked(boolean blocked) {
+        isBlocked = blocked;
     }
 }

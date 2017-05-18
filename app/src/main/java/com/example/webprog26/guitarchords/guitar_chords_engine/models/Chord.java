@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Chord implements Serializable{
 
     public static final String NO_TYPE = "maj";
-    public static final String NO_PARAM = "ordinary";
+    public static final String NO_ALTERATION = "ordinary";
 
     private String mChordTitle;
     private String mChordSecondTitle;

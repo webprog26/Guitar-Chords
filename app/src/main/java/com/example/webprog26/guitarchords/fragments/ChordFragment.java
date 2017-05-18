@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,10 +85,12 @@ public class ChordFragment extends Fragment {
                 mChordsShapesAdapter = new ChordsShapesAdapter(chord.getChordShapes(), getActivity());
 
                 //Asking DatabaseProvider for the chord shapes
+                Log.i(TAG, "Asking DatabaseProvider for the chord shapes");
                 EventBus.getDefault().post(new LoadShapesFromDatabaseEvent(chord));
             }
         }
     }
+
 
     @Nullable
     @Override
@@ -118,8 +121,10 @@ public class ChordFragment extends Fragment {
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onLoadShapesFromDatabaseEvent(LoadShapesFromDatabaseEvent loadShapesFromDatabaseEvent){
+        Log.i(TAG, "onLoadShapesFromDatabaseEvent");
         final ArrayList<ChordShape> chordShapes = getDatabaseProvider().getChordShapes(loadShapesFromDatabaseEvent.getChord());
-                EventBus.getDefault().post(new ShapesLoadedFromDatabaseEvent(chordShapes));
+        addChordShapesToShapesHolder(chordShapes);
+        EventBus.getDefault().post(new ShapesLoadedFromDatabaseEvent(chordShapes));
     }
 
     /**
@@ -170,6 +175,17 @@ public class ChordFragment extends Fragment {
         rvChordImages.setItemAnimator(new DefaultItemAnimator());
         rvChordImages.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvChordImages.setAdapter(getChordsShapesAdapter());
+    }
+
+    private void addChordShapesToShapesHolder(ArrayList<ChordShape> chordShapes){
+
+        if(GuitarChordsApp.getShapesHolder().getChordShapes().size() == 0){
+            for(ChordShape chordShape: chordShapes){
+                GuitarChordsApp.getShapesHolder().addChordShape(chordShape);
+            }
+        }
+
+        Log.i(TAG, "GuitarChordsApp.getShapesHolder().getChordShapes().size() " + GuitarChordsApp.getShapesHolder().getChordShapes().size());
     }
 
     public DatabaseProvider getDatabaseProvider() {

@@ -6,7 +6,6 @@ import android.util.Log;
 import com.example.webprog26.guitarchords.fragments.dialogs.ReferenceDialog;
 import com.example.webprog26.guitarchords.guitar_chords_engine.commands.LoadChordFragmentCommand;
 import com.example.webprog26.guitarchords.guitar_chords_engine.commands.WrongChordUiMessageCommand;
-import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.UIMessageHelper;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
 /**

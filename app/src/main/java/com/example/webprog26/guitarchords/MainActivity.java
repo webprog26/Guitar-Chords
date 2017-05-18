@@ -11,9 +11,10 @@ import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordImageClickEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.SetChordSecondTitleEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.interfaces.SpinnerReseter;
 import com.example.webprog26.guitarchords.guitar_chords_engine.listeners.SpinnerListener;
 import com.example.webprog26.guitarchords.guitar_chords_engine.managers.ChordsManager;
-import com.example.webprog26.guitarchords.interfaces.SpinnerReseter;
+import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,16 +31,16 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
 
     private static final String TAG = "MainActivity_TAG";
 
-    private static final int SPINNER_DEFAULT_POSITION = 0;
+    private static final int DEFAULT_SPINNER_POSITION = 0;
 
-    @BindView(R.id.sp_chords_titles)
-    AppCompatSpinner mSpChordsTitles;
+    @BindView(R.id.sp_chord_title)
+    AppCompatSpinner mSpChordTitle;
 
-    @BindView(R.id.sp_chords_types)
-    AppCompatSpinner mSpChordsTypes;
+    @BindView(R.id.sp_chord_type)
+    AppCompatSpinner mSpChordType;
 
-    @BindView(R.id.sp_chords_params)
-    AppCompatSpinner mSpChordsParams;
+    @BindView(R.id.sp_chord_alteration)
+    AppCompatSpinner mSpChordAlteration;
 
     private ChordsManager mChordsManager;
     private SpinnerListener mSpinnerListener;
@@ -57,13 +58,22 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
 
         //Initializing SpinnerListener instance
         mSpinnerListener = new SpinnerListener(getChordsManager(), this);
+        getSpChordsTitle().setOnItemSelectedListener(mSpinnerListener);
+        getSpChordsType().setOnItemSelectedListener(mSpinnerListener);
+        getSpChordsAlteration().setOnItemSelectedListener(mSpinnerListener);
 
-        getSpChordsTitles().setOnItemSelectedListener(mSpinnerListener);
-        getSpChordsTypes().setOnItemSelectedListener(mSpinnerListener);
-        getSpChordsParams().setOnItemSelectedListener(mSpinnerListener);
+        getSpChordsTitle().setOnTouchListener(mSpinnerListener);
+        getSpChordsType().setOnTouchListener(mSpinnerListener);
+        getSpChordsAlteration().setOnTouchListener(mSpinnerListener);
 
+
+        Chord chord = new Chord();
+        chord.setChordTitle("C");
+        chord.setChordType(Chord.NO_TYPE);
+        chord.setChordAlteration(Chord.NO_ALTERATION);
+
+        mChordsManager.setFragmentWithListOfChordImages(chord);
     }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -108,16 +118,17 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
         mChordsManager.setChordSecondTitle(setChordSecondTitleEvent.getChord().getChordSecondTitle());
     }
 
-    public AppCompatSpinner getSpChordsTitles() {
-        return mSpChordsTitles;
+
+    public AppCompatSpinner getSpChordsTitle() {
+        return mSpChordTitle;
     }
 
-    public AppCompatSpinner getSpChordsTypes() {
-        return mSpChordsTypes;
+    public AppCompatSpinner getSpChordsType() {
+        return mSpChordType;
     }
 
-    public AppCompatSpinner getSpChordsParams() {
-        return mSpChordsParams;
+    public AppCompatSpinner getSpChordsAlteration() {
+        return mSpChordAlteration;
     }
 
     public ChordsManager getChordsManager() {
@@ -129,22 +140,12 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
     }
 
     @Override
-    public void resetChordsTitleSpinner() {
-        getSpChordsTitles().setSelection(SPINNER_DEFAULT_POSITION);
-    }
-
-    @Override
-    public void resetChordsTypesSpinner() {
-        getSpChordsTypes().setSelection(SPINNER_DEFAULT_POSITION);
-    }
-
-    @Override
     public void resetChordsParamsSpinner() {
-        getSpChordsParams().setSelection(SPINNER_DEFAULT_POSITION);
+        getSpChordsAlteration().setSelection(DEFAULT_SPINNER_POSITION);
     }
 
     @Override
     public void setChordsTitleSpinnerPosition(int position) {
-        getSpChordsTitles().setSelection(position);
+        getSpChordsTitle().setSelection(position);
     }
 }

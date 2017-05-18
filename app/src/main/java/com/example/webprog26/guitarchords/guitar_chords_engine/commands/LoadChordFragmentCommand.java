@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentManager;
 import com.example.webprog26.guitarchords.fragments.ChordFragment;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by webpr on 17.05.2017.
  */

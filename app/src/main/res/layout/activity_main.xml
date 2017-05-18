@@ -23,7 +23,7 @@
 
     </LinearLayout>
 
-    <include layout="@layout/spinners"/>
+    <include layout="@layout/layout_spinners"/>
     
     <FrameLayout
         android:id="@+id/fl_content"
