@@ -8,13 +8,13 @@ import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 
 public class ChordImageClickEvent {
 
-    private final ChordShape mChordShape;
+    private final int clickedChordShapePosition;
 
-    public ChordImageClickEvent(ChordShape mChordShape) {
-        this.mChordShape = mChordShape;
+    public ChordImageClickEvent(int clickedChordShapePosition) {
+        this.clickedChordShapePosition = clickedChordShapePosition;
     }
 
-    public ChordShape getChordShape() {
-        return mChordShape;
+    public int getClickedChordShapePosition() {
+        return clickedChordShapePosition;
     }
 }

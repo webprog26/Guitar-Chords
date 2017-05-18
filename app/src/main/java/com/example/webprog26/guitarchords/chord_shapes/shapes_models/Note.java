@@ -42,4 +42,11 @@ public class Note {
     public void setNoteCoordinates(Point noteCoordinates) {
         this.mNoteCoordinates = noteCoordinates;
     }
+
+    @Override
+    public String toString() {
+        return "Note " + "\"" + getNoteTitle() + "\""
+                + " fingerIndex " + getFingerIndex()
+                + " noteCoordinates " + getNoteCoordinates().toString();
+    }
 }

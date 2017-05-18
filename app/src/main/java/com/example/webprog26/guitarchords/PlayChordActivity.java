@@ -1,16 +1,13 @@
 package com.example.webprog26.guitarchords;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
-import com.example.webprog26.guitarchords.fragments.PlayShapeFragment;
 import com.example.webprog26.guitarchords.guitar_chords_engine.managers.PlayableShapeManager;
+import com.example.webprog26.guitarchords.guitar_chords_engine.models.ChordTitlesHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,7 +18,8 @@ import butterknife.ButterKnife;
 
 public class PlayChordActivity extends AppCompatActivity {
 
-    public static final String ACTIVITY_PLAYABLE_SHAPE = "activity_playable_shape";
+    public static final String ACTIVITY_PLAYABLE_SHAPE_POSITION = "activity_playable_shape_position";
+    public static final String ACTIVITY_CHORD_TITLE = "activity_chord_title";
 
     private static final String TAG = "PlayActivity_TAG";
 
@@ -46,28 +44,30 @@ public class PlayChordActivity extends AppCompatActivity {
 
         if(receivedIntent != null){
 
-           final PlayableShape playableShape = (PlayableShape)receivedIntent.getSerializableExtra(ACTIVITY_PLAYABLE_SHAPE);
+           final int playableShapePosition = receivedIntent.getIntExtra(ACTIVITY_PLAYABLE_SHAPE_POSITION, -1);
+           final ChordTitlesHolder chordTitlesHolder = (ChordTitlesHolder) receivedIntent.getSerializableExtra(ACTIVITY_CHORD_TITLE);
+           if(chordTitlesHolder != null){
 
-           if(playableShape != null){
+               if(playableShapePosition != -1){
+                   getTvChordTitle().setText(getChordTitleFromPlayableShape(chordTitlesHolder));
+                   mPlayableShapeManager = new PlayableShapeManager(getSupportFragmentManager(),
+                           R.id.play_chord_activity_content,
+                           this,
+                           playableShapePosition);
 
-               getTvChordTitle().setText(getChordTitleFromPlayableShape(playableShape));
-               mPlayableShapeManager = new PlayableShapeManager(getSupportFragmentManager(),
-                                                                R.id.play_chord_activity_content,
-                                                                this,
-                                                                playableShape);
-
-               if(savedInstanceState == null) {
-                    mPlayableShapeManager.setPlayableShapeFragment();
+                   if(savedInstanceState == null) {
+                       mPlayableShapeManager.setPlayableShapeFragment();
+                   }
                }
            }
         }
     }
 
-    private String getChordTitleFromPlayableShape(PlayableShape playableShape){
-        if(playableShape.getChordSecondTitle() == null){
-            return getString(R.string.chord_with_one_title, playableShape.getChordTitle());
+    private String getChordTitleFromPlayableShape(ChordTitlesHolder chordTitlesHolder){
+        if(chordTitlesHolder.getChordSecondTitle() == null){
+            return getString(R.string.chord_with_one_title, chordTitlesHolder.getChordTitle());
         }
-        return getString(R.string.chord_with_two_titles, playableShape.getChordTitle(), playableShape.getChordSecondTitle());
+        return getString(R.string.chord_with_two_titles, chordTitlesHolder.getChordTitle(), chordTitlesHolder.getChordSecondTitle());
     }
 
     private TextView getTvChordTitle() {

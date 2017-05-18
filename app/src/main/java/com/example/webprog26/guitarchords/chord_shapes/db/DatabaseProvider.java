@@ -15,6 +15,9 @@ import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsUplo
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -26,15 +29,12 @@ public class DatabaseProvider {
 
     private static final String TAG = "DatabaseProvider";
 
-    private static final String C = "C";
-    //Todo add all the chords titles
+    private static final String SHAPE_NOTES = "shape_notes";
 
-    private static final String CHORD_ALTERATION_ORDINARY = "ordinary";
-    private static final String CHORD_ALTERATION_SHARP = "sharp";
-    private static final String CHORD_ALTERATION_FLAT = "flat";
-
-    private static final String CHORD_TYPE_MAJ = "maj";
-    //Todo add all the chords types
+    private static final String SHAPE_NOTE_TITLE = "shape_note_title";
+    private static final String SHAPE_NOTE_FINGER_INDEX = "shape_note_finger_index";
+    private static final String SHAPE_NOTE_X = "shape_note_x";
+    private static final String SHAPE_NOTE_Y = "shape_note_y";
 
     private final DatabaseHelper mDatabaseHelper;
 
@@ -98,14 +98,15 @@ public class DatabaseProvider {
             contentValues.put(DatabaseHelper.SHAPE_START_FRET_NUMBER, chordShape.getStartFretNumber());
 
 
-        for(int i = 0; i < chordShape.getNotes().size(); i++){
-            Note note = chordShape.getNotes().get(i);
-            Point noteCoordinates = note.getNoteCoordinates();
-            contentValues.put(DatabaseHelper.SHAPE_NOTE_TITLE, note.getNoteTitle());
-            contentValues.put(DatabaseHelper.SHAPE_NOTE_X, noteCoordinates.x);
-            contentValues.put(DatabaseHelper.SHAPE_NOTE_Y, noteCoordinates.y);
+
+        String notesListString = getNotesArrayToString(chordShape.getNotes());
+
+        if(notesListString != null && notesListString.length() > 0){
+            contentValues.put(DatabaseHelper.SHAPE_NOTES_LIST, notesListString);
         }
-            contentValues.put(DatabaseHelper.SHAPE_IMAGE_TITLE, chordShape.getImagePath());
+
+        contentValues.put(DatabaseHelper.SHAPE_IMAGE_TITLE, chordShape.getImagePath());
+
 
             contentValues.put(DatabaseHelper.SHAPE_HAS_MUTED_STRINGS, String.valueOf(chordShape.isHasMutedStrings()));
 
@@ -129,7 +130,7 @@ public class DatabaseProvider {
                 contentValues.put(DatabaseHelper.SHAPE_BAR_START_Y, startBarPoint.y);
                 contentValues.put(DatabaseHelper.SHAPE_BAR_END_X, endBarPoint.x);
                 contentValues.put(DatabaseHelper.SHAPE_BAR_END_Y, endBarPoint.y);
-
+            Log.i(TAG, "contentValues.size(): " + contentValues.size());
             getDatabaseHelper().getWritableDatabase().insert(shapesTableTitle, null, contentValues);
     }
 
@@ -159,6 +160,7 @@ public class DatabaseProvider {
             int startFretNumber = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.SHAPE_START_FRET_NUMBER));
 
             ArrayList<Note> notes = getNotes(chordShapesTableTitle, shapePosition);
+
 
             String imageTitle = cursor.getString(cursor.getColumnIndex(DatabaseHelper.SHAPE_IMAGE_TITLE));
 
@@ -226,15 +228,36 @@ public class DatabaseProvider {
                                                                         null);
 
         while(cursor.moveToNext()){
-            Note note = new Note(cursor.getString(cursor.getColumnIndex(DatabaseHelper.SHAPE_NOTE_TITLE)),
-                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.SHAPE_NOTE_FINGER_INDEX)),
-                    new Point(
-                            cursor.getInt(cursor.getColumnIndex(DatabaseHelper.SHAPE_NOTE_X)),
-                            cursor.getInt(cursor.getColumnIndex(DatabaseHelper.SHAPE_NOTE_Y))
-                    ));
-            notes.add(note);
+            JSONObject jsonNotes = getJSONNotesObject(cursor.getString(cursor.getColumnIndex(DatabaseHelper.SHAPE_NOTES_LIST)));
+
+            if(jsonNotes != null){
+                Log.i(TAG, jsonNotes.toString());
+                JSONArray jsonArray = jsonNotes.optJSONArray(SHAPE_NOTES);
+                for(int i = 0; i < jsonArray.length(); i++){
+                    Note note = null;
+                    JSONObject arrayObject = null;
+
+                    try {
+                        arrayObject = jsonArray.getJSONObject(i);
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
+
+                    if(arrayObject != null){
+                       note = getNoteFromJSONObject(arrayObject);
+                    }
+
+
+                    if(note != null){
+                        notes.add(note);
+                    }
+                }
+            }
         }
         cursor.close();
+        for(Note note: notes){
+            Log.i(TAG, "getNote " + note);
+        }
         return notes;
     }
 
@@ -270,5 +293,64 @@ public class DatabaseProvider {
         }
         cursor.close();
         return chord;
+    }
+
+    private String getNotesArrayToString(ArrayList<Note> notes){
+        JSONObject json = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        for(Note note: notes){
+            JSONObject singleNoteJsonObject = new JSONObject();
+
+            try {
+                singleNoteJsonObject.put(SHAPE_NOTE_TITLE, note.getNoteTitle());
+                singleNoteJsonObject.put(SHAPE_NOTE_FINGER_INDEX, note.getFingerIndex());
+                singleNoteJsonObject.put(SHAPE_NOTE_X, note.getNoteCoordinates().x);
+                singleNoteJsonObject.put(SHAPE_NOTE_Y, note.getNoteCoordinates().y);
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+
+            jsonArray.put(singleNoteJsonObject);
+
+        }
+
+        try {
+            json.put(SHAPE_NOTES, jsonArray);
+            Log.i(TAG, json.toString());
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return json.toString();
+    }
+
+    private Note getNoteFromJSONObject(JSONObject noteJsonObject){
+        Note note = null;
+        if(noteJsonObject != null){
+            try {
+                note = new Note(
+                        noteJsonObject.getString(SHAPE_NOTE_TITLE),
+                        noteJsonObject.getInt(SHAPE_NOTE_FINGER_INDEX),
+                        new Point(
+                                noteJsonObject.getInt(SHAPE_NOTE_X),
+                                noteJsonObject.getInt(SHAPE_NOTE_Y)
+                        )
+                );
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+        return note;
+    }
+
+    private JSONObject getJSONNotesObject(String jsonNotesString){
+        JSONObject jsonNotes = null;
+        try {
+            jsonNotes = new JSONObject(jsonNotesString);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+        return jsonNotes;
     }
 }

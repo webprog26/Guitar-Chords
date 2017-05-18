@@ -29,10 +29,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String SHAPE_ID = "_id";
     public static final String SHAPE_POSITION = "shape_position";
     public static final String SHAPE_START_FRET_NUMBER = "shape_start_fret_number";
-    public static final String SHAPE_NOTE_TITLE = "shape_note_title";
-    public static final String SHAPE_NOTE_FINGER_INDEX = "shape_note_finger_index";
-    public static final String SHAPE_NOTE_X = "shape_note_x";
-    public static final String SHAPE_NOTE_Y = "shape_note_y";
+//    public static final String SHAPE_NOTE_TITLE = "shape_note_title";
+//    public static final String SHAPE_NOTE_FINGER_INDEX = "shape_note_finger_index";
+//    public static final String SHAPE_NOTE_X = "shape_note_x";
+//    public static final String SHAPE_NOTE_Y = "shape_note_y";
+    public static final String SHAPE_NOTES_LIST = "shape_notes_list";
     public static final String SHAPE_HAS_BAR = "shape_has_bar";
     public static final String SHAPE_BAR_START_X = "shape_bar_start_x";
     public static final String SHAPE_BAR_START_Y = "shape_bar_start_y";
@@ -65,10 +66,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + SHAPE_ID + " integer primary key autoincrement, "
                 + SHAPE_POSITION + " integer, "
                 + SHAPE_START_FRET_NUMBER + " integer, "
-                + SHAPE_NOTE_TITLE + " varchar(100), "
-                + SHAPE_NOTE_FINGER_INDEX + " integer, "
-                + SHAPE_NOTE_X + " integer, "
-                + SHAPE_NOTE_Y + " integer, "
+                + SHAPE_NOTES_LIST + " text(1000), "
+//                + SHAPE_NOTE_TITLE + " varchar(100), "
+//                + SHAPE_NOTE_FINGER_INDEX + " integer, "
+//                + SHAPE_NOTE_X + " integer, "
+//                + SHAPE_NOTE_Y + " integer, "
                 + SHAPE_HAS_BAR + " varchar(100), "
                 + SHAPE_BAR_START_X + " integer, "
                 + SHAPE_BAR_START_Y + " integer, "

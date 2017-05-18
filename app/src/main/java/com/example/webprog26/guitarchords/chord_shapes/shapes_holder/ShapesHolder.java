@@ -1,6 +1,7 @@
 package com.example.webprog26.guitarchords.chord_shapes.shapes_holder;
 
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
+import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 
 import java.util.ArrayList;
 
@@ -12,7 +13,7 @@ public class ShapesHolder {
 
     private static ShapesHolder instance;
 
-    private static ArrayList<ChordShape> mChordShapes = new ArrayList<>();
+    private static ArrayList<PlayableShape> mChordPlayableShapes = new ArrayList<>();
 
     private ShapesHolder(){
     }
@@ -25,11 +26,11 @@ public class ShapesHolder {
         return instance;
     }
 
-    public static void addChordShape(ChordShape chordShape){
-        getChordShapes().add(chordShape);
+    public static void addChordShape(PlayableShape chordPlayableShape){
+        getChordPlayableShapes().add(chordPlayableShape);
     }
 
-    public static ArrayList<ChordShape> getChordShapes() {
-        return mChordShapes;
+    public static ArrayList<PlayableShape> getChordPlayableShapes() {
+        return mChordPlayableShapes;
     }
 }

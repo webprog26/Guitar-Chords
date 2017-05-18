@@ -15,6 +15,7 @@ import com.example.webprog26.guitarchords.guitar_chords_engine.interfaces.Spinne
 import com.example.webprog26.guitarchords.guitar_chords_engine.listeners.SpinnerListener;
 import com.example.webprog26.guitarchords.guitar_chords_engine.managers.ChordsManager;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
+import com.example.webprog26.guitarchords.guitar_chords_engine.models.ChordTitlesHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -95,20 +96,9 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
     public void onChordImageClickEvent(ChordImageClickEvent chordImageClickEvent){
         Intent playChordIntent = new Intent(MainActivity.this, PlayChordActivity.class);
 
-        ChordShape chordShape = chordImageClickEvent.getChordShape();
-        ChordsManager chordsManager = getChordsManager();
 
-        Log.i(TAG, chordShape.toString());
-        Log.i(TAG, "shapes table title " + ShapesTableTitleHelper.getChordShapesTableTitle(chordsManager.getCurrentChord()));
-
-        PlayableShape playableShape = new PlayableShape(
-                chordsManager.getCurrentChord().getChordTitle(),
-                chordsManager.getChordSecondTitle(),
-                ShapesTableTitleHelper.getChordShapesTableTitle(chordsManager.getCurrentChord()),
-                chordShape.getPosition()
-        );
-
-        playChordIntent.putExtra(PlayChordActivity.ACTIVITY_PLAYABLE_SHAPE, playableShape);
+        playChordIntent.putExtra(PlayChordActivity.ACTIVITY_PLAYABLE_SHAPE_POSITION, chordImageClickEvent.getClickedChordShapePosition());
+        playChordIntent.putExtra(PlayChordActivity.ACTIVITY_CHORD_TITLE, new ChordTitlesHolder(getChordsManager().getCurrentChord()));
         startActivity(playChordIntent);
     }
 

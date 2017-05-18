@@ -47,7 +47,7 @@ public class ChordsShapesAdapter extends RecyclerView.Adapter<ChordsShapesAdapte
     }
 
     @Override
-    public void onBindViewHolder(ChordsShapesAdapter.ChordShapesViewholder holder, int position) {
+    public void onBindViewHolder(ChordsShapesAdapter.ChordShapesViewholder holder, final int position) {
         final ChordShape chordShape = getChordShapesList().get(position);
 
         ImageView ivChordImage = holder.getIvChordImage();
@@ -60,7 +60,7 @@ public class ChordsShapesAdapter extends RecyclerView.Adapter<ChordsShapesAdapte
         ivChordImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new ChordImageClickEvent(chordShape));
+                EventBus.getDefault().post(new ChordImageClickEvent(position));
             }
         });
     }

@@ -16,6 +16,8 @@ import com.example.webprog26.guitarchords.R;
 import com.example.webprog26.guitarchords.app.GuitarChordsApp;
 import com.example.webprog26.guitarchords.chord_shapes.db.DatabaseProvider;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
+import com.example.webprog26.guitarchords.chord_shapes.shapes_models.Note;
+import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.adapter.ChordsShapesAdapter;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsShapesReadyWithImagesEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.FillChordWithDataEvent;
@@ -123,6 +125,13 @@ public class ChordFragment extends Fragment {
     public void onLoadShapesFromDatabaseEvent(LoadShapesFromDatabaseEvent loadShapesFromDatabaseEvent){
         Log.i(TAG, "onLoadShapesFromDatabaseEvent");
         final ArrayList<ChordShape> chordShapes = getDatabaseProvider().getChordShapes(loadShapesFromDatabaseEvent.getChord());
+
+        for(ChordShape chordShape: chordShapes){
+            for(Note note: chordShape.getNotes()){
+                Log.i(TAG, note.toString());
+            }
+        }
+
         addChordShapesToShapesHolder(chordShapes);
         EventBus.getDefault().post(new ShapesLoadedFromDatabaseEvent(chordShapes));
     }
@@ -179,13 +188,13 @@ public class ChordFragment extends Fragment {
 
     private void addChordShapesToShapesHolder(ArrayList<ChordShape> chordShapes){
 
-        if(GuitarChordsApp.getShapesHolder().getChordShapes().size() == 0){
+        if(GuitarChordsApp.getShapesHolder().getChordPlayableShapes().size() == 0){
             for(ChordShape chordShape: chordShapes){
-                GuitarChordsApp.getShapesHolder().addChordShape(chordShape);
+                GuitarChordsApp.getShapesHolder().addChordShape(new PlayableShape(chordShape));
             }
         }
 
-        Log.i(TAG, "GuitarChordsApp.getShapesHolder().getChordShapes().size() " + GuitarChordsApp.getShapesHolder().getChordShapes().size());
+        Log.i(TAG, "GuitarChordsApp.getShapesHolder().getChordShapes().size() " + GuitarChordsApp.getShapesHolder().getChordPlayableShapes().size());
     }
 
     public DatabaseProvider getDatabaseProvider() {
