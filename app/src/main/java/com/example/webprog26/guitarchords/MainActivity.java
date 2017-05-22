@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 
-import com.example.webprog26.guitarchords.chord_shapes.db.ShapesTableTitleHelper;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordImageClickEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.SetChordSecondTitleEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.interfaces.SpinnerReseter;
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerReseter{
         getSpChordsType().setOnTouchListener(mSpinnerListener);
         getSpChordsAlteration().setOnTouchListener(mSpinnerListener);
 
-
+        //Todo load last used chord
         Chord chord = new Chord();
         chord.setChordTitle("C");
         chord.setChordType(Chord.NO_TYPE);

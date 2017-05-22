@@ -1,12 +1,11 @@
 package com.example.webprog26.guitarchords.chord_shapes.shapes_holder;
 
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 
 import java.util.ArrayList;
 
 /**
- * Created by webpr on 17.05.2017.
+ * Holds selected Chord shapes statically
  */
 
 public class ShapesHolder {
@@ -32,5 +31,9 @@ public class ShapesHolder {
 
     public static ArrayList<PlayableShape> getChordPlayableShapes() {
         return mChordPlayableShapes;
+    }
+
+    public static int getShapesSize(){
+        return getChordPlayableShapes().size();
     }
 }

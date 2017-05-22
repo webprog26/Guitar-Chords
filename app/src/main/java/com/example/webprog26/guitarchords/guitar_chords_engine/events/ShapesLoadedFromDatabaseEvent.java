@@ -10,13 +10,11 @@ import java.util.ArrayList;
 
 public class ShapesLoadedFromDatabaseEvent {
 
-    private final ArrayList<ChordShape> mChordShapes;
 
-    public ShapesLoadedFromDatabaseEvent(ArrayList<ChordShape> chordShapes) {
-        this.mChordShapes = chordShapes;
+
+    public ShapesLoadedFromDatabaseEvent() {
+
     }
 
-    public ArrayList<ChordShape> getChordShapes() {
-        return mChordShapes;
-    }
+
 }

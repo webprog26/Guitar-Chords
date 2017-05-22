@@ -1,6 +1,5 @@
 package com.example.webprog26.guitarchords.fragments;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,21 +15,18 @@ import com.example.webprog26.guitarchords.R;
 import com.example.webprog26.guitarchords.app.GuitarChordsApp;
 import com.example.webprog26.guitarchords.chord_shapes.db.DatabaseProvider;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.adapter.ChordsShapesAdapter;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsShapesReadyWithImagesEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.FillChordWithDataEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadShapesFromDatabaseEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.SetChordSecondTitleEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ShapesLoadedFromDatabaseEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.managers.ChordFragmentShapesManager;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
-import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.LoadBitmapsFromAssetsHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,6 +48,7 @@ public class ChordFragment extends Fragment {
 
     private Unbinder unbinder;
     private ChordsShapesAdapter mChordsShapesAdapter;
+    private ChordFragmentShapesManager mChordFragmentShapesManager;
 
 
     /**
@@ -79,15 +76,16 @@ public class ChordFragment extends Fragment {
 
             if(chord != null){
 
-                //Asking DatabaseProvider for Chord's second title and chord shapes table title
-                EventBus.getDefault().post(new FillChordWithDataEvent(chord));
+                mChordFragmentShapesManager = new ChordFragmentShapesManager(chord, getActivity().getAssets());
+                mChordFragmentShapesManager.fillChordWithData();
+
 
                 //Initialing adapter with empty data
-                mChordsShapesAdapter = new ChordsShapesAdapter(chord.getChordShapes(), getActivity());
+                mChordsShapesAdapter = new ChordsShapesAdapter(mChordFragmentShapesManager.getChord().getChordShapes(), getActivity());
 
                 //Asking DatabaseProvider for the chord shapes
                 Log.i(TAG, "Asking DatabaseProvider for the chord shapes");
-                EventBus.getDefault().post(new LoadShapesFromDatabaseEvent(chord));
+                mChordFragmentShapesManager.loadShapesFromSQLiteDb();
             }
         }
     }
@@ -123,10 +121,12 @@ public class ChordFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onLoadShapesFromDatabaseEvent(LoadShapesFromDatabaseEvent loadShapesFromDatabaseEvent){
         Log.i(TAG, "onLoadShapesFromDatabaseEvent");
-        final ArrayList<ChordShape> chordShapes = getDatabaseProvider().getChordShapes(loadShapesFromDatabaseEvent.getChord());
+        mChordFragmentShapesManager.setChordShapes(getDatabaseProvider().getChordShapes(loadShapesFromDatabaseEvent.getChord()));
 
-        addChordShapesToShapesHolder(chordShapes);
-        EventBus.getDefault().post(new ShapesLoadedFromDatabaseEvent(chordShapes));
+        if(mChordFragmentShapesManager.getChordShapes().size() > 0){
+            mChordFragmentShapesManager.addChordShapesToShapesHolder();
+        }
+        EventBus.getDefault().post(new ShapesLoadedFromDatabaseEvent());
     }
 
     /**
@@ -135,15 +135,9 @@ public class ChordFragment extends Fragment {
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onShapesLoadedFromDatabaseEvent(ShapesLoadedFromDatabaseEvent shapesLoadedFromDatabaseEvent){
-        ArrayList<ChordShape> chordShapes = shapesLoadedFromDatabaseEvent.getChordShapes();
-        for(ChordShape chordShape: chordShapes){
-            Bitmap shapeImage = LoadBitmapsFromAssetsHelper.loadBitmapFromAssets(getActivity().getAssets(),
-                    chordShape.getImagePath());
-            if(shapeImage != null){
-                chordShape.setShapeImage(shapeImage);
-            }
-        }
-        EventBus.getDefault().post(new ChordsShapesReadyWithImagesEvent(chordShapes));
+
+        mChordFragmentShapesManager.addShapesBitmapsImages();
+        EventBus.getDefault().post(new ChordsShapesReadyWithImagesEvent(mChordFragmentShapesManager.getChordShapes()));
     }
 
     /**
@@ -179,26 +173,17 @@ public class ChordFragment extends Fragment {
         rvChordImages.setAdapter(getChordsShapesAdapter());
     }
 
-    private void addChordShapesToShapesHolder(ArrayList<ChordShape> chordShapes){
 
-        if(GuitarChordsApp.getShapesHolder().getChordPlayableShapes().size() == 0){
-            for(ChordShape chordShape: chordShapes){
-                GuitarChordsApp.getShapesHolder().addChordShape(new PlayableShape(chordShape));
-            }
-        }
 
-        Log.i(TAG, "GuitarChordsApp.getShapesHolder().getChordShapes().size() " + GuitarChordsApp.getShapesHolder().getChordPlayableShapes().size());
-    }
-
-    public DatabaseProvider getDatabaseProvider() {
+    private DatabaseProvider getDatabaseProvider() {
         return GuitarChordsApp.getDatabaseProvider();
     }
 
-    public ChordsShapesAdapter getChordsShapesAdapter() {
+    private ChordsShapesAdapter getChordsShapesAdapter() {
         return mChordsShapesAdapter;
     }
 
-    public RecyclerView getRvChordImages() {
+    private RecyclerView getRvChordImages() {
         return mRvChordImages;
     }
 }
