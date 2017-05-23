@@ -76,7 +76,7 @@ public class ChordFragment extends Fragment {
 
             if(chord != null){
 
-                mChordFragmentShapesManager = new ChordFragmentShapesManager(chord, getActivity().getAssets());
+                mChordFragmentShapesManager = new ChordFragmentShapesManager(chord, getActivity().getAssets(), getActivity());
                 mChordFragmentShapesManager.fillChordWithData();
 
 

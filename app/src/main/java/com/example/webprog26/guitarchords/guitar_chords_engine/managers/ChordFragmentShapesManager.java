@@ -1,15 +1,18 @@
 package com.example.webprog26.guitarchords.guitar_chords_engine.managers;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 
 import com.example.webprog26.guitarchords.app.GuitarChordsApp;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_holder.ShapesHolder;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
+import com.example.webprog26.guitarchords.chord_shapes.shapes_models.Note;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.FillChordWithDataEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadShapesFromDatabaseEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.LoadBitmapsFromAssetsHelper;
+import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.NoteBitmapsHelper;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,10 +29,11 @@ public class ChordFragmentShapesManager {
     private final Chord mChord;
     private final AssetManager mAssetManager;
     private ArrayList<ChordShape> mChordShapes = new ArrayList<>();
-
-    public ChordFragmentShapesManager(Chord chord, AssetManager assetManager) {
+    private final Context mContext;
+    public ChordFragmentShapesManager(Chord chord, AssetManager assetManager, Context context) {
         this.mChord = chord;
         this.mAssetManager = assetManager;
+        this.mContext = context;
     }
 
     public void fillChordWithData(){
@@ -59,6 +63,12 @@ public class ChordFragmentShapesManager {
                         chordShape.getImagePath());
                 if(shapeImage != null){
                     chordShape.setShapeImage(shapeImage);
+                }
+
+                for(Note note: chordShape.getNotes()){
+                    if(note.getNoteCoordinates().y != 0){
+                        note.setNoteTitleDrawable(mContext.getResources().getDrawable(NoteBitmapsHelper.getNoteDrawable(note.getNoteTitle())));
+                    }
                 }
             }
         }

@@ -14,11 +14,11 @@ public class LoadShapeFragmentCommand extends LoadFragmentCommand {
 
     private static final String PLAY_FRAGMENT_TAG = "chords_fragment_tag";
 
-    private final PlayableShape mPlayableShape;
+    private final int mPlayableShapePosition;
 
-    public LoadShapeFragmentCommand(FragmentManager fragmentManager, int containerViewId, PlayableShape playableShape) {
+    public LoadShapeFragmentCommand(FragmentManager fragmentManager, int containerViewId, int playableShapePosition) {
         super(fragmentManager, containerViewId);
-        this.mPlayableShape = playableShape;
+        this.mPlayableShapePosition = playableShapePosition;
     }
 
     @Override
@@ -28,11 +28,11 @@ public class LoadShapeFragmentCommand extends LoadFragmentCommand {
         PlayShapeFragment playShapeFragment = (PlayShapeFragment) fragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG);
 
         if(playShapeFragment == null){
-            fragmentManager.beginTransaction().add(R.id.play_chord_activity_content, PlayShapeFragment.newInstance(getPlayableShape())).commit();
+            fragmentManager.beginTransaction().add(R.id.play_chord_activity_content, PlayShapeFragment.newInstance(getPlayableShapePosition())).commit();
         }
     }
 
-    private PlayableShape getPlayableShape() {
-        return mPlayableShape;
+    private int getPlayableShapePosition(){
+        return mPlayableShapePosition;
     }
 }

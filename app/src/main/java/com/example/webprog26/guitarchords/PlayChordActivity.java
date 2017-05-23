@@ -3,6 +3,7 @@ package com.example.webprog26.guitarchords;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -57,6 +58,8 @@ public class PlayChordActivity extends AppCompatActivity implements PlayChordAct
                            this,
                            playableShapePosition,
                            this);
+
+                   Log.i(TAG, "playableShapePosition: " + playableShapePosition);
 
                    if(savedInstanceState == null) {
                        mPlayableShapeManager.setPlayableShapeFragment();

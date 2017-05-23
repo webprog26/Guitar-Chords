@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="@dimen/single_string_layout_width"
+        android:height="@dimen/single_string_layout_height"
+        android:drawable="@drawable/single_fret"/>
+    <item
+        android:width="@dimen/string_width"
+        android:height="@dimen/single_string_layout_height"
+        android:drawable="@drawable/string"
+        android:gravity="center_horizontal"/>
+    <item
+        android:width="@dimen/single_string_layout_width"
+        android:height="@dimen/single_string_layout_width"
+        android:drawable="@drawable/first_finger"
+        android:top="14dp"/>
+</layer-list>

@@ -35,6 +35,7 @@ public class DatabaseProvider {
     private static final String SHAPE_NOTE_FINGER_INDEX = "shape_note_finger_index";
     private static final String SHAPE_NOTE_X = "shape_note_x";
     private static final String SHAPE_NOTE_Y = "shape_note_y";
+    private static final String SHAPE_NOTE_PLACE = "note_place";
 
     private final DatabaseHelper mDatabaseHelper;
 
@@ -307,6 +308,7 @@ public class DatabaseProvider {
                 singleNoteJsonObject.put(SHAPE_NOTE_FINGER_INDEX, note.getFingerIndex());
                 singleNoteJsonObject.put(SHAPE_NOTE_X, note.getNoteCoordinates().x);
                 singleNoteJsonObject.put(SHAPE_NOTE_Y, note.getNoteCoordinates().y);
+                singleNoteJsonObject.put(SHAPE_NOTE_PLACE, note.getNotePlace());
             } catch (JSONException e){
                 e.printStackTrace();
             }
@@ -335,7 +337,8 @@ public class DatabaseProvider {
                         new Point(
                                 noteJsonObject.getInt(SHAPE_NOTE_X),
                                 noteJsonObject.getInt(SHAPE_NOTE_Y)
-                        )
+                        ),
+                        noteJsonObject.getInt(SHAPE_NOTE_PLACE)
                 );
             } catch (JSONException e){
                 e.printStackTrace();
