@@ -8,9 +8,9 @@ import android.util.Log;
 
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.BarChordShape;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.Note;
+import com.example.webprog26.guitarchords.chord_shapes.note.Note;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.StandardChordShape;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.StringMutedHolder;
+import com.example.webprog26.guitarchords.chord_shapes.muted_strings_holder.StringMutedHolder;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.ChordsUploadedToDatabaseEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
 

@@ -1,6 +1,10 @@
 package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
 
 import android.graphics.Bitmap;
+
+import com.example.webprog26.guitarchords.chord_shapes.muted_strings_holder.StringMutedHolder;
+import com.example.webprog26.guitarchords.chord_shapes.note.Note;
+
 import java.util.ArrayList;
 
 /**

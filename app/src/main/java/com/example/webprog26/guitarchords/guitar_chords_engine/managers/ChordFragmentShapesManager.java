@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import com.example.webprog26.guitarchords.app.GuitarChordsApp;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_holder.ShapesHolder;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.ChordShape;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.Note;
+import com.example.webprog26.guitarchords.chord_shapes.note.Note;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.FillChordWithDataEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadShapesFromDatabaseEvent;

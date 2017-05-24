@@ -1,4 +1,4 @@
-package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
+package com.example.webprog26.guitarchords.chord_shapes.muted_strings_holder;
 
 /**
  * Muted strings state holder

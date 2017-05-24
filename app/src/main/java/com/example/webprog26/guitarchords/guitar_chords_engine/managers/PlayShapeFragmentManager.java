@@ -2,8 +2,9 @@ package com.example.webprog26.guitarchords.guitar_chords_engine.managers;
 
 import android.util.Log;
 
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.Fretboard;
-import com.example.webprog26.guitarchords.chord_shapes.shapes_models.GuitarString;
+import com.example.webprog26.guitarchords.chord_shapes.fretboard.Fretboard;
+import com.example.webprog26.guitarchords.chord_shapes.fretboard.guitar_string.GuitarString;
+import com.example.webprog26.guitarchords.chord_shapes.note.Note;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 
 /**
@@ -27,9 +28,9 @@ public class PlayShapeFragmentManager {
         for(int i = 0; i < 6; i++){
             GuitarString guitarString = getFretboard().getGuitarString(i);
             if(!guitarString.isMuted()){
-                String noteTitle = playableShape.getNotes().get(index).getNoteTitle();
-                Log.i("GuitarString", noteTitle);
-                guitarString.setNote(noteTitle);
+                Note note = playableShape.getNotes().get(index);
+                Log.i("GuitarString", note.getNoteTitle());
+                guitarString.setNote(note);
                  if(index > 0){
                      index--;
                  }
@@ -38,9 +39,31 @@ public class PlayShapeFragmentManager {
     }
 
     public void setStringsCoordinates(float startX, float endX, int index){
-        GuitarString guitarString = getFretboard().getGuitarString(index);
+        GuitarString guitarString = getGuitarString(index);
         guitarString.setStartX(startX);
         guitarString.setEndX(endX);
+    }
+
+    public void setStringPlayableY(float playableY, int index){
+        GuitarString guitarString = getGuitarString(index);
+        guitarString.setPlayableY(playableY);
+    }
+
+    private GuitarString getGuitarString(int index){
+        return getFretboard().getGuitarString(index);
+    }
+
+    public void playNote(int guitarStringIndex){
+        GuitarString guitarString = getGuitarString(guitarStringIndex);
+
+        if(guitarString != null){
+
+            Note noteToPlay = guitarString.getNote();
+
+            if(noteToPlay != null){
+                guitarString.playNote();
+            }
+        }
     }
 
     public PlayableShape getPlayableShape() {

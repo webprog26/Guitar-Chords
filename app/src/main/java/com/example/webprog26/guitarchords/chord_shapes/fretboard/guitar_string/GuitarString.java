@@ -1,6 +1,8 @@
-package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
+package com.example.webprog26.guitarchords.chord_shapes.fretboard.guitar_string;
 
 import android.util.Log;
+
+import com.example.webprog26.guitarchords.chord_shapes.note.Note;
 
 /**
  * Created by webpr on 23.05.2017.
@@ -13,9 +15,10 @@ public class GuitarString {
     private final String mTitle;
     private float startX;
     private float endX;
+    private float playableY;
     private final boolean isMuted;
 
-    private String mNote;
+    private Note mNote;
 
 
     public GuitarString(String title, boolean isMuted) {
@@ -47,19 +50,27 @@ public class GuitarString {
         return isMuted;
     }
 
-    public String getNote() {
+    public Note getNote() {
         return mNote;
     }
 
-    public void setNote(String note) {
+    public void setNote(Note note) {
         this.mNote = note;
+    }
+
+    public float getPlayableY() {
+        return playableY;
+    }
+
+    public void setPlayableY(float playableY) {
+        this.playableY = playableY;
     }
 
     public void playNote(){
         if(!isMuted){
-            String note = getNote();
-            if(note != null){
-                Log.i(TAG, "Play " + note);
+            String noteTitle = getNote().getNoteTitle();
+            if(noteTitle != null){
+                Log.i(TAG, "Play " + noteTitle);
             }
         }
     }

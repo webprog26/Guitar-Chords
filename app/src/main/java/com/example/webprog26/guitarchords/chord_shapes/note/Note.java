@@ -1,4 +1,4 @@
-package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
+package com.example.webprog26.guitarchords.chord_shapes.note;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -11,12 +11,14 @@ import android.graphics.drawable.Drawable;
 
 public class Note {
 
-    private String mNoteTitle;
-    private int mFingerIndex;
-    private Point mNoteCoordinates;
-    private int mNotePlace;
+    private final String mNoteTitle;
+    private final int mFingerIndex;
+    private final Point mNoteCoordinates;
+    private final int mNotePlace;
     private Drawable mNoteTitleDrawable;
     private Drawable mNoteFingerIndexDrawable;
+//    private final String mNoteSoundPath;
+    private int mNoteSound = -1;
 
     public Note(String noteTitle, int fingerIndex, Point noteCoordinates, int notePlace) {
         this.mNoteTitle = noteTitle;
@@ -29,24 +31,12 @@ public class Note {
         return mNoteTitle;
     }
 
-    public void setNoteTitle(String mNoteTitle) {
-        this.mNoteTitle = mNoteTitle;
-    }
-
     public int getFingerIndex() {
         return mFingerIndex;
     }
 
-    public void setFingerIndex(int fingerIndex) {
-        this.mFingerIndex = fingerIndex;
-    }
-
     public Point getNoteCoordinates() {
         return mNoteCoordinates;
-    }
-
-    public void setNoteCoordinates(Point noteCoordinates) {
-        this.mNoteCoordinates = noteCoordinates;
     }
 
     public Drawable getNoteTitleDrawable() {
@@ -67,10 +57,6 @@ public class Note {
 
     public int getNotePlace() {
         return mNotePlace;
-    }
-
-    public void setNotePlace(int notePlace) {
-        this.mNotePlace = notePlace;
     }
 
     @Override

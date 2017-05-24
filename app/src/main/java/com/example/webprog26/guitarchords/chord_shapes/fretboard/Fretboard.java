@@ -1,4 +1,7 @@
-package com.example.webprog26.guitarchords.chord_shapes.shapes_models;
+package com.example.webprog26.guitarchords.chord_shapes.fretboard;
+
+import com.example.webprog26.guitarchords.chord_shapes.fretboard.guitar_string.GuitarString;
+import com.example.webprog26.guitarchords.chord_shapes.muted_strings_holder.StringMutedHolder;
 
 /**
  * Created by webpr on 23.05.2017.
