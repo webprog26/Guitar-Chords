@@ -28,7 +28,9 @@ public class LoadShapeFragmentCommand extends LoadFragmentCommand {
         PlayShapeFragment playShapeFragment = (PlayShapeFragment) fragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG);
 
         if(playShapeFragment == null){
-            fragmentManager.beginTransaction().add(R.id.play_chord_activity_content, PlayShapeFragment.newInstance(getPlayableShapePosition())).commit();
+            fragmentManager.beginTransaction().add(R.id.play_chord_activity_content, PlayShapeFragment.newInstance(getPlayableShapePosition()), PLAY_FRAGMENT_TAG).commit();
+        } else {
+            fragmentManager.beginTransaction().replace(R.id.play_chord_activity_content, PlayShapeFragment.newInstance(getPlayableShapePosition()), PLAY_FRAGMENT_TAG).commit();
         }
     }
 
