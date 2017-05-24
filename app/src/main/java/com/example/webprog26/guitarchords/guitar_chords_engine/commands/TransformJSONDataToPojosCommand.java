@@ -46,6 +46,7 @@ public class TransformJSONDataToPojosCommand implements Command {
     private static final String NOTE_Y = "note_y";
     private static final String FINGER_INDEX = "finger_index";
     private static final String NOTE_PLACE = "note_place";
+    private static final String NOTE_SOUND_PATH = "note_sound_path";
 
     private static final String HAS_BAR = "has_bar";
     private static final String START_BAR_POINT_X = "start_bar_point_x";
@@ -132,7 +133,8 @@ public class TransformJSONDataToPojosCommand implements Command {
                                                 noteJsonObject.getInt(FINGER_INDEX),
                                                 new Point(noteJsonObject.getInt(NOTE_X),
                                                           noteJsonObject.getInt(NOTE_Y)),
-                                                noteJsonObject.getInt(NOTE_PLACE)
+                                                noteJsonObject.getInt(NOTE_PLACE),
+                                                noteJsonObject.getString(NOTE_SOUND_PATH)
                                         );
                                         notes.add(note);
                                     }

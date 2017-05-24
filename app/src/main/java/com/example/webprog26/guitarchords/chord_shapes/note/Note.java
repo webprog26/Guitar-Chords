@@ -17,14 +17,15 @@ public class Note {
     private final int mNotePlace;
     private Drawable mNoteTitleDrawable;
     private Drawable mNoteFingerIndexDrawable;
-//    private final String mNoteSoundPath;
+    private final String mNoteSoundPath;
     private int mNoteSound = -1;
 
-    public Note(String noteTitle, int fingerIndex, Point noteCoordinates, int notePlace) {
+    public Note(String noteTitle, int fingerIndex, Point noteCoordinates, int notePlace, String noteSoundPath) {
         this.mNoteTitle = noteTitle;
         this.mFingerIndex = fingerIndex;
         this.mNoteCoordinates = noteCoordinates;
         this.mNotePlace = notePlace;
+        this.mNoteSoundPath = noteSoundPath;
     }
 
     public String getNoteTitle() {
@@ -57,6 +58,18 @@ public class Note {
 
     public int getNotePlace() {
         return mNotePlace;
+    }
+
+    public String getNoteSoundPath() {
+        return mNoteSoundPath;
+    }
+
+    public int getNoteSound() {
+        return mNoteSound;
+    }
+
+    public void setNoteSound(int noteSound) {
+        this.mNoteSound = noteSound;
     }
 
     @Override

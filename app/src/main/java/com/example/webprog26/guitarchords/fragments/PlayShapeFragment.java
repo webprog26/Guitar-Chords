@@ -1,5 +1,8 @@
 package com.example.webprog26.guitarchords.fragments;
 
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,12 +22,16 @@ import com.example.webprog26.guitarchords.chord_shapes.fretboard.guitar_string.G
 import com.example.webprog26.guitarchords.chord_shapes.note.Note;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadNotesBitmapsEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadNotesSoundsEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.NoteSoundsLoadedEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.listeners.FretTouchListener;
 import com.example.webprog26.guitarchords.guitar_chords_engine.managers.PlayShapeFragmentManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -117,6 +124,58 @@ public class PlayShapeFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        EventBus.getDefault().post(new LoadNotesSoundsEvent());
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onLoadNotesSoundsEvent(LoadNotesSoundsEvent loadNotesSoundsEvent){
+        SoundPool soundPool = getPlayShapeFragmentManager().getSoundPool();
+
+        try {
+            AssetManager assetManager = getActivity().getAssets();
+            AssetFileDescriptor descriptor;
+
+            PlayShapeFragmentManager playShapeFragmentManager = getPlayShapeFragmentManager();
+
+            if(playShapeFragmentManager != null){
+
+                Fretboard fretboard = playShapeFragmentManager.getFretboard();
+
+                if(fretboard != null){
+
+                    for(int i = 0; i < 6; i++){
+                        GuitarString guitarString = fretboard.getGuitarString(i);
+
+                       if(guitarString != null){
+
+                           Note note = guitarString.getNote();
+
+                           if(note != null){
+
+                               String noteSoundPath = note.getNoteSoundPath();
+
+                               if(noteSoundPath != null){
+
+                                   descriptor = assetManager.openFd(noteSoundPath);
+                                   note.setNoteSound(soundPool.load(descriptor, 0));
+                               }
+                           }
+                       }
+                    }
+                }
+            }
+        } catch (IOException ioe){
+            ioe.printStackTrace();
+        }
+        EventBus.getDefault().post(new NoteSoundsLoadedEvent());
+    }
+
+    private void catchFretboardTouches(){
+        getFret().setOnTouchListener(new FretTouchListener(getPlayShapeFragmentManager()));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNoteSoundsLoadedEvent(NoteSoundsLoadedEvent noteSoundsLoadedEvent){
         final PlayShapeFragmentManager playShapeFragmentManager = getPlayShapeFragmentManager();
 
         if(playShapeFragmentManager != null){
@@ -214,13 +273,9 @@ public class PlayShapeFragment extends Fragment {
                     Log.i(TAG, "playShapeFragmentManager is null");
                 }
 
-            catchFretboardTouches();
+                catchFretboardTouches();
             }
         });
-    }
-
-    private void catchFretboardTouches(){
-        getFret().setOnTouchListener(new FretTouchListener(getPlayShapeFragmentManager()));
     }
 
     @Override
@@ -235,7 +290,7 @@ public class PlayShapeFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
-    public PlayShapeFragmentManager getPlayShapeFragmentManager() {
+    private PlayShapeFragmentManager getPlayShapeFragmentManager() {
         return mPlayShapeFragmentManager;
     }
 

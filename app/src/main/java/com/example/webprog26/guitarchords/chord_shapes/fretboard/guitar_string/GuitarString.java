@@ -68,9 +68,14 @@ public class GuitarString {
 
     public void playNote(){
         if(!isMuted){
-            String noteTitle = getNote().getNoteTitle();
-            if(noteTitle != null){
-                Log.i(TAG, "Play " + noteTitle);
+            Note noteToPlay = getNote();
+
+            if(noteToPlay != null){
+
+                String noteTitle = noteToPlay.getNoteTitle();
+                if(noteTitle != null){
+                    Log.i(TAG, "Play " + noteTitle + " " + noteToPlay.getNoteSoundPath());
+                }
             }
         }
     }
