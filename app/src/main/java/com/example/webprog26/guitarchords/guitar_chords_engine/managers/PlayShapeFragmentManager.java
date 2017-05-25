@@ -1,6 +1,6 @@
 package com.example.webprog26.guitarchords.guitar_chords_engine.managers;
 
-import android.content.res.AssetManager;
+
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
@@ -9,6 +9,9 @@ import com.example.webprog26.guitarchords.chord_shapes.fretboard.Fretboard;
 import com.example.webprog26.guitarchords.chord_shapes.fretboard.guitar_string.GuitarString;
 import com.example.webprog26.guitarchords.chord_shapes.note.Note;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
+import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadNotesSoundsEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by webpr on 23.05.2017.
@@ -18,7 +21,7 @@ public class PlayShapeFragmentManager {
 
     private final PlayableShape mPlayableShape;
     private final Fretboard mFretboard;
-    private final SoundPool mSoundPool = new SoundPool(10, AudioManager.STREAM_MUSIC,0);
+    private SoundPool mSoundPool;
 
 
     public PlayShapeFragmentManager(PlayableShape playableShape) {
@@ -70,7 +73,13 @@ public class PlayShapeFragmentManager {
                 int noteSound = noteToPlay.getNoteSound();
 
                 if(noteSound != -1){
-                    getSoundPool().play(noteSound, 1, 1, 0, 0, 1);
+
+                    SoundPool soundPool = getSoundPool();
+
+                    if(soundPool != null){
+
+                        soundPool.play(noteSound, 1, 1, 0, 0, 1);
+                    }
                 }
             }
         }
@@ -86,5 +95,25 @@ public class PlayShapeFragmentManager {
 
     public SoundPool getSoundPool() {
         return mSoundPool;
+    }
+
+    private void setSoundPool(SoundPool mSoundPool) {
+        this.mSoundPool = mSoundPool;
+    }
+
+    public void releaseSoundPool(){
+        SoundPool soundPool = getSoundPool();
+        if(soundPool != null){
+            soundPool.release();
+            setSoundPool(null);
+        }
+    }
+
+    public void createSoundPool(){
+        SoundPool soundPool = getSoundPool();
+        if(soundPool == null){
+            setSoundPool(new SoundPool(10, AudioManager.STREAM_MUSIC,0));
+            EventBus.getDefault().post(new LoadNotesSoundsEvent());
+        }
     }
 }

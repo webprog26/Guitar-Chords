@@ -9,6 +9,8 @@ import com.example.webprog26.guitarchords.chord_shapes.muted_strings_holder.Stri
 
 public class Fretboard {
 
+    public static final int STRINGS_COUNT = 6;
+
     public static final String FIRST_STRING = "first_string";
     public static final String SECOND_STRING = "second_string";
     public static final String THIRD_STRING = "third_string";
