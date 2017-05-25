@@ -1,15 +1,18 @@
 package com.example.webprog26.guitarchords.guitar_chords_engine.listeners;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.webprog26.guitarchords.guitar_chords_engine.managers.PlayShapeFragmentManager;
 
 /**
- * Created by webprog26 on 24.05.2017.
+ * Fret touches listener
  */
 
 public class FretTouchListener implements View.OnTouchListener {
+
+    private static final String TAG = "FretTouchListener";
 
     private final PlayShapeFragmentManager mPlayShapeFragmentManager;
     private float touchPointX;
@@ -29,6 +32,7 @@ public class FretTouchListener implements View.OnTouchListener {
             case MotionEvent.ACTION_DOWN:
 
                 setTouchPointX(event.getX());
+                Log.i(TAG, "action_down " + getTouchPointX());
 
                 if(event.getX() > playShapeFragmentManager.getFretboard().getGuitarString(0).getStartX()
                         && event.getX() < playShapeFragmentManager.getFretboard().getGuitarString(0).getEndX()
@@ -70,7 +74,7 @@ public class FretTouchListener implements View.OnTouchListener {
 
                 float currentTouchPointX = event.getX();
 
-                if(Math.abs(currentTouchPointX - getTouchPointX()) > 40){
+                if(Math.abs(currentTouchPointX - getTouchPointX()) > 10){
 
                     if(event.getX() > playShapeFragmentManager.getFretboard().getGuitarString(0).getStartX()
                             && event.getX() < playShapeFragmentManager.getFretboard().getGuitarString(0).getEndX()
@@ -107,9 +111,10 @@ public class FretTouchListener implements View.OnTouchListener {
                             && event.getY() > playShapeFragmentManager.getFretboard().getGuitarString(5).getPlayableY()){
                         playShapeFragmentManager.playNote(5);
                     }
-
-                setTouchPointX(currentTouchPointX);
                 }
+                Log.i(TAG, "difference " + Math.abs(currentTouchPointX - getTouchPointX()));
+                setTouchPointX(currentTouchPointX);
+                Log.i(TAG, "getTouchPointX " + getTouchPointX());
                 break;
             case MotionEvent.ACTION_UP:
                 setTouchPointX(0);
