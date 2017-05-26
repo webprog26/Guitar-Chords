@@ -1,6 +1,7 @@
 package com.example.webprog26.guitarchords.guitar_chords_engine.listeners;
 
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -14,12 +15,12 @@ public class FretTouchListener implements View.OnTouchListener {
 
     private static final String TAG = "FretTouchListener";
 
+
     private final PlayShapeFragmentManager mPlayShapeFragmentManager;
     private float touchPointX;
 
     public FretTouchListener(PlayShapeFragmentManager playShapeFragmentManager) {
         this.mPlayShapeFragmentManager = playShapeFragmentManager;
-
         setTouchPointX(0);
     }
 
@@ -29,10 +30,9 @@ public class FretTouchListener implements View.OnTouchListener {
         final PlayShapeFragmentManager playShapeFragmentManager = getPlayShapeFragmentManager();
 
         switch (event.getAction() & MotionEvent.ACTION_MASK){
-            case MotionEvent.ACTION_DOWN:
 
+            case MotionEvent.ACTION_DOWN:
                 setTouchPointX(event.getX());
-                Log.i(TAG, "action_down " + getTouchPointX());
 
                 if(event.getX() > playShapeFragmentManager.getFretboard().getGuitarString(0).getStartX()
                         && event.getX() < playShapeFragmentManager.getFretboard().getGuitarString(0).getEndX()
@@ -69,12 +69,13 @@ public class FretTouchListener implements View.OnTouchListener {
                         && event.getY() > playShapeFragmentManager.getFretboard().getGuitarString(5).getPlayableY()){
                     playShapeFragmentManager.playNote(5);
                 }
-                break;
+
+                return true;
             case MotionEvent.ACTION_MOVE:
 
                 float currentTouchPointX = event.getX();
 
-                if(Math.abs(currentTouchPointX - getTouchPointX()) > 10){
+                if(Math.abs(currentTouchPointX - getTouchPointX()) > 40){
 
                     if(event.getX() > playShapeFragmentManager.getFretboard().getGuitarString(0).getStartX()
                             && event.getX() < playShapeFragmentManager.getFretboard().getGuitarString(0).getEndX()
@@ -111,17 +112,19 @@ public class FretTouchListener implements View.OnTouchListener {
                             && event.getY() > playShapeFragmentManager.getFretboard().getGuitarString(5).getPlayableY()){
                         playShapeFragmentManager.playNote(5);
                     }
+
+                    setTouchPointX(currentTouchPointX);
                 }
-                Log.i(TAG, "difference " + Math.abs(currentTouchPointX - getTouchPointX()));
-                setTouchPointX(currentTouchPointX);
-                Log.i(TAG, "getTouchPointX " + getTouchPointX());
-                break;
+                return false;
             case MotionEvent.ACTION_UP:
+
                 setTouchPointX(0);
                 break;
         }
+
         return true;
     }
+
 
     private PlayShapeFragmentManager getPlayShapeFragmentManager() {
         return mPlayShapeFragmentManager;

@@ -83,7 +83,7 @@
               "note_title":"e",
               "note_x":6,
               "note_y":1,
-              "finger_index":1,
+              "finger_index":4,
               "note_place":22,
               "note_sound_path":"c/maj/ordinary/sounds/e_1_0.wav"
             },
@@ -107,7 +107,7 @@
               "note_title":"c",
               "note_x":5,
               "note_y":3,
-              "finger_index":4,
+              "finger_index":1,
               "note_place":5,
               "note_sound_path":"c/maj/ordinary/sounds/c_5_3.wav"
             }
@@ -201,7 +201,7 @@
               "note_title":"e",
               "note_x":6,
               "note_y":1,
-              "finger_index":1,
+              "finger_index":2,
               "note_place":16,
               "note_sound_path":"c/maj/ordinary/sounds/e_1_0.wav"
             },
@@ -209,7 +209,7 @@
               "note_title":"c",
               "note_x":4,
               "note_y":2,
-              "finger_index":2,
+              "finger_index":4,
               "note_place":12,
               "note_sound_path":"c/maj/ordinary/sounds/c_5_3.wav"
             },
@@ -225,7 +225,7 @@
               "note_title":"c",
               "note_x":3,
               "note_y":3,
-              "finger_index":4,
+              "finger_index":1,
               "note_place":0,
               "note_sound_path":"c/maj/ordinary/sounds/c_2_1.wav"
             }

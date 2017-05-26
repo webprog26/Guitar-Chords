@@ -19,6 +19,7 @@ public class Note {
     private Drawable mNoteFingerIndexDrawable;
     private final String mNoteSoundPath;
     private int mNoteSound = -1;
+    private boolean isFingerIndexVisible = false;
 
     public Note(String noteTitle, int fingerIndex, Point noteCoordinates, int notePlace, String noteSoundPath) {
         this.mNoteTitle = noteTitle;
@@ -70,6 +71,14 @@ public class Note {
 
     public void setNoteSound(int noteSound) {
         this.mNoteSound = noteSound;
+    }
+
+    public boolean isFingerIndexVisible() {
+        return isFingerIndexVisible;
+    }
+
+    public void setFingerIndexVisible(boolean fingerIndexVisible) {
+        isFingerIndexVisible = fingerIndexVisible;
     }
 
     @Override

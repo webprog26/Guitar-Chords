@@ -2,6 +2,7 @@ package com.example.webprog26.guitarchords.guitar_chords_engine.managers;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 
 import com.example.webprog26.guitarchords.app.GuitarChordsApp;
@@ -11,6 +12,7 @@ import com.example.webprog26.guitarchords.chord_shapes.note.Note;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.FillChordWithDataEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadShapesFromDatabaseEvent;
+import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.FingerIndexDrawableIDHelper;
 import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.LoadBitmapsFromAssetsHelper;
 import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.NoteBitmapsHelper;
 import com.example.webprog26.guitarchords.guitar_chords_engine.models.Chord;
@@ -56,6 +58,7 @@ public class ChordFragmentShapesManager {
 
     public void addShapesBitmapsImages(){
         ArrayList<ChordShape> chordShapes = getChordShapes();
+        Resources resources = mContext.getResources();
 
         if(chordShapes.size() > 0){
             for(ChordShape chordShape: getChordShapes()){
@@ -67,7 +70,8 @@ public class ChordFragmentShapesManager {
 
                 for(Note note: chordShape.getNotes()){
                     if(note.getNoteCoordinates().y != 0){
-                        note.setNoteTitleDrawable(mContext.getResources().getDrawable(NoteBitmapsHelper.getNoteDrawable(note.getNoteTitle())));
+                        note.setNoteTitleDrawable(resources.getDrawable(NoteBitmapsHelper.getNoteDrawable(note.getNoteTitle())));
+                        note.setNoteFingerIndexDrawable(resources.getDrawable(FingerIndexDrawableIDHelper.getFingerIndexDrawableId(note.getFingerIndex())));
                     }
                 }
             }

@@ -2,6 +2,7 @@ package com.example.webprog26.guitarchords.fragments;
 
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -65,7 +66,6 @@ public class PlayShapeFragment extends Fragment {
     private Unbinder unbinder;
     private PlayShapeFragmentManager mPlayShapeFragmentManager;
 
-
     public static PlayShapeFragment newInstance(final int playableShapePosition){
         Bundle args = new Bundle();
         args.putSerializable(FRAGMENT_PLAYABLE_SHAPE_POSITION, playableShapePosition);
@@ -92,6 +92,7 @@ public class PlayShapeFragment extends Fragment {
                     if(playableShape != null){
 
                     mPlayShapeFragmentManager = new PlayShapeFragmentManager(playableShape);
+
 
                         Log.i(TAG, playableShape.toString());
                         for(Note note: playableShape.getNotes()){
@@ -251,7 +252,7 @@ public class PlayShapeFragment extends Fragment {
 
                 if(playShapeFragmentManager.getPlayableShape().getNotes() != null){
 
-                    for(Note note: playShapeFragmentManager.getPlayableShape().getNotes()){
+                    for(final Note note: playShapeFragmentManager.getPlayableShape().getNotes()){
 
                         if(note.getNoteTitleDrawable() != null){
 
@@ -260,7 +261,24 @@ public class PlayShapeFragment extends Fragment {
                             stringImageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
                             stringImageView.requestLayout();
                             stringImageView.setImageDrawable(note.getNoteTitleDrawable());
+                            stringImageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Drawable noteImageDrawable;
+                                    Log.i(TAG, "note.isFingerIndexVisible() " + note.isFingerIndexVisible());
+                                    if(!note.isFingerIndexVisible()){
+                                        noteImageDrawable = note.getNoteFingerIndexDrawable();
+                                        note.setFingerIndexVisible(true);
+                                    } else {
+                                        noteImageDrawable = note.getNoteTitleDrawable();
+                                        note.setFingerIndexVisible(false);
+                                    }
 
+                                    if(noteImageDrawable != null){
+                                        ((ImageView) v).setImageDrawable(noteImageDrawable);
+                                    }
+                                }
+                            });
                         } else {
 
 //                            Log.i(TAG, "note.getNoteTitleDrawable() is null");
