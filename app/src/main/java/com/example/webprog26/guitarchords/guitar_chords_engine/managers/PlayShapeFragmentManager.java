@@ -19,14 +19,36 @@ import org.greenrobot.eventbus.EventBus;
 
 public class PlayShapeFragmentManager {
 
+    private static final String TAG = "PSFManager";
+
     private final PlayableShape mPlayableShape;
     private final Fretboard mFretboard;
     private SoundPool mSoundPool;
+    private boolean shouldDrawBar = false;
+    private int barStartPlace = PlayableShape.UNEXISTING_COORDINATE;
+    private int barEndPlace = PlayableShape.UNEXISTING_COORDINATE;
 
 
     public PlayShapeFragmentManager(PlayableShape playableShape) {
         this.mPlayableShape = playableShape;
         this.mFretboard = new Fretboard(playableShape.getStringMutedHolder());
+
+        if(playableShape.isHasBar()){
+            Log.i(TAG, "shape has bar");
+            setShouldDrawBar(true);
+
+            int barStartPlace = playableShape.getBarStartPoint().x;
+            int barEndPlace = playableShape.getBarEndPoint().x;
+
+
+            if(barStartPlace != PlayableShape.UNEXISTING_COORDINATE){
+                setBarStartPlace(barStartPlace);
+            }
+
+            if(barEndPlace != PlayableShape.UNEXISTING_COORDINATE){
+                setBarEndPlace(barEndPlace);
+            }
+        }
 
             if(playableShape.getNotes().size() > 0){
                 int index = (playableShape.getNotes().size() - 1);
@@ -115,5 +137,29 @@ public class PlayShapeFragmentManager {
             setSoundPool(new SoundPool(10, AudioManager.STREAM_MUSIC,0));
             EventBus.getDefault().post(new LoadNotesSoundsEvent());
         }
+    }
+
+    public boolean isShouldDrawBar() {
+        return shouldDrawBar;
+    }
+
+    public void setShouldDrawBar(boolean shouldDrawBar) {
+        this.shouldDrawBar = shouldDrawBar;
+    }
+
+    public int getBarStartPlace() {
+        return barStartPlace;
+    }
+
+    public void setBarStartPlace(int barStartPlace) {
+        this.barStartPlace = barStartPlace;
+    }
+
+    public int getBarEndPlace() {
+        return barEndPlace;
+    }
+
+    public void setBarEndPlace(int barEndPlace) {
+        this.barEndPlace = barEndPlace;
     }
 }

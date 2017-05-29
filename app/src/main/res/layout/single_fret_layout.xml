@@ -7,13 +7,17 @@
         android:layout_width="@dimen/single_string_layout_width"
         android:layout_height="@dimen/single_string_layout_height"
         android:background="@drawable/single_fret">
-
         <ImageView
             android:layout_width="@dimen/string_width"
             android:layout_height="match_parent"
             android:src="@drawable/string"
             android:layout_centerHorizontal="true"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 
@@ -28,7 +32,10 @@
             android:src="@drawable/string"
             android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"/>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -42,7 +49,10 @@
             android:src="@drawable/string"
             android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"/>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -56,7 +66,10 @@
             android:src="@drawable/string"
             android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"/>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -70,7 +83,10 @@
             android:src="@drawable/string"
             android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"/>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
     </RelativeLayout>
 
 </merge>

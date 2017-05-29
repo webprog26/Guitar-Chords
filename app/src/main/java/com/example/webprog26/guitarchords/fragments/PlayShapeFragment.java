@@ -98,11 +98,11 @@ public class PlayShapeFragment extends Fragment {
                         for(Note note: playableShape.getNotes()){
                             Log.i(TAG, note.toString());
 
-                            if(note.getNoteMainDrawable() != null){
-                                Log.i(TAG, note.getNoteMainDrawable().toString());
+                            if(note.getNoteTitleDrawable() != null){
+                                Log.i(TAG, note.getNoteTitleDrawable().toString());
 
                             } else {
-//                                Log.i(TAG, "note.getNoteMainDrawable() is null");
+//                                Log.i(TAG, "note.getNoteTitleDrawable() is null");
                             }
                         }
 
@@ -245,6 +245,25 @@ public class PlayShapeFragment extends Fragment {
 
             if(playShapeFragmentManager.getPlayableShape() != null){
 
+                if(playShapeFragmentManager.isShouldDrawBar()){
+
+                    int barStartPlace = playShapeFragmentManager.getBarStartPlace();
+                    int barEndPlace = playShapeFragmentManager.getBarEndPlace();
+
+                    if(barStartPlace != PlayableShape.UNEXISTING_COORDINATE
+                            && barEndPlace != PlayableShape.UNEXISTING_COORDINATE){
+
+                        for(int i = barStartPlace; i < barEndPlace; i += 5){
+                            RelativeLayout fretRelativeLayout = (RelativeLayout) getFret().getChildAt(i);
+                            ImageView stringImageView = (ImageView) fretRelativeLayout.getChildAt(1);
+                            stringImageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+                            stringImageView.requestLayout();
+                            stringImageView.setImageDrawable(getResources().getDrawable(R.drawable.bar));
+                            stringImageView.bringToFront();
+                        }
+                    }
+                }
+
                 getTvFretToStart().setText(
                         FretNumbersTransformHelper
                                 .getFretToStartString(playShapeFragmentManager
@@ -254,13 +273,14 @@ public class PlayShapeFragment extends Fragment {
 
                     for(final Note note: playShapeFragmentManager.getPlayableShape().getNotes()){
 
-                        if(note.getNoteMainDrawable() != null){
+                        if(note.getNoteTitleDrawable() != null){
 
                             RelativeLayout fretRelativeLayout = (RelativeLayout) getFret().getChildAt(note.getNotePlace());
-                            ImageView stringImageView = (ImageView) fretRelativeLayout.getChildAt(0);
+                            ImageView stringImageView = (ImageView) fretRelativeLayout.getChildAt(1);
                             stringImageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
                             stringImageView.requestLayout();
-                            stringImageView.setImageDrawable(note.getNoteMainDrawable());
+                            stringImageView.setImageDrawable(note.getNoteTitleDrawable());
+                            stringImageView.bringToFront();
                             stringImageView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -270,7 +290,7 @@ public class PlayShapeFragment extends Fragment {
                                         noteImageDrawable = note.getNoteFingerIndexDrawable();
                                         note.setFingerIndexVisible(true);
                                     } else {
-                                        noteImageDrawable = note.getNoteMainDrawable();
+                                        noteImageDrawable = note.getNoteTitleDrawable();
                                         note.setFingerIndexVisible(false);
                                     }
 
@@ -281,7 +301,7 @@ public class PlayShapeFragment extends Fragment {
                             });
                         } else {
 
-//                            Log.i(TAG, "note.getNoteMainDrawable() is null");
+//                            Log.i(TAG, "note.getNoteTitleDrawable() is null");
 
                         }
                     }

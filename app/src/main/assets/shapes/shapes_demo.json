@@ -113,9 +113,9 @@
             }
           ],
           "has_bar": true,
-          "start_bar_point_x":2,
+          "start_bar_point_x":5,
           "start_bar_point_y":1,
-          "end_bar_point_x":6,
+          "end_bar_point_x":25,
           "end_bar_point_y":1,
           "has_muted_strings":true,
           "sixth_string_muted":true,
@@ -231,9 +231,9 @@
             }
           ],
           "has_bar": true,
-          "start_bar_point_x":1,
+          "start_bar_point_x":0,
           "start_bar_point_y":1,
-          "end_bar_point_x":6,
+          "end_bar_point_x":20,
           "end_bar_point_y":1,
           "has_muted_strings":false,
           "sixth_string_muted":false,
@@ -281,7 +281,7 @@
               "note_sound_path":"c/maj/ordinary/sounds/c_2_1.wav"
             }
           ],
-          "has_bar": true,
+          "has_bar": false,
           "start_bar_point_x":5,
           "start_bar_point_y":1,
           "end_bar_point_x":6,
