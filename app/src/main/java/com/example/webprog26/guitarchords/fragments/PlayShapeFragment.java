@@ -98,11 +98,11 @@ public class PlayShapeFragment extends Fragment {
                         for(Note note: playableShape.getNotes()){
                             Log.i(TAG, note.toString());
 
-                            if(note.getNoteTitleDrawable() != null){
-                                Log.i(TAG, note.getNoteTitleDrawable().toString());
+                            if(note.getNoteMainDrawable() != null){
+                                Log.i(TAG, note.getNoteMainDrawable().toString());
 
                             } else {
-//                                Log.i(TAG, "note.getNoteTitleDrawable() is null");
+//                                Log.i(TAG, "note.getNoteMainDrawable() is null");
                             }
                         }
 
@@ -254,13 +254,13 @@ public class PlayShapeFragment extends Fragment {
 
                     for(final Note note: playShapeFragmentManager.getPlayableShape().getNotes()){
 
-                        if(note.getNoteTitleDrawable() != null){
+                        if(note.getNoteMainDrawable() != null){
 
                             RelativeLayout fretRelativeLayout = (RelativeLayout) getFret().getChildAt(note.getNotePlace());
                             ImageView stringImageView = (ImageView) fretRelativeLayout.getChildAt(0);
                             stringImageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
                             stringImageView.requestLayout();
-                            stringImageView.setImageDrawable(note.getNoteTitleDrawable());
+                            stringImageView.setImageDrawable(note.getNoteMainDrawable());
                             stringImageView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -270,7 +270,7 @@ public class PlayShapeFragment extends Fragment {
                                         noteImageDrawable = note.getNoteFingerIndexDrawable();
                                         note.setFingerIndexVisible(true);
                                     } else {
-                                        noteImageDrawable = note.getNoteTitleDrawable();
+                                        noteImageDrawable = note.getNoteMainDrawable();
                                         note.setFingerIndexVisible(false);
                                     }
 
@@ -281,7 +281,7 @@ public class PlayShapeFragment extends Fragment {
                             });
                         } else {
 
-//                            Log.i(TAG, "note.getNoteTitleDrawable() is null");
+//                            Log.i(TAG, "note.getNoteMainDrawable() is null");
 
                         }
                     }

@@ -1,6 +1,5 @@
 package com.example.webprog26.guitarchords.chord_shapes.note;
 
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 
@@ -9,13 +8,13 @@ import android.graphics.drawable.Drawable;
  * Note model
  */
 
-public class Note {
+public class Note extends SuperNote{
 
     private final String mNoteTitle;
     private final int mFingerIndex;
     private final Point mNoteCoordinates;
     private final int mNotePlace;
-    private Drawable mNoteTitleDrawable;
+
     private Drawable mNoteFingerIndexDrawable;
     private final String mNoteSoundPath;
     private int mNoteSound = -1;
@@ -39,14 +38,6 @@ public class Note {
 
     public Point getNoteCoordinates() {
         return mNoteCoordinates;
-    }
-
-    public Drawable getNoteTitleDrawable() {
-        return mNoteTitleDrawable;
-    }
-
-    public void setNoteTitleDrawable(Drawable mNoteTitleDrawable) {
-        this.mNoteTitleDrawable = mNoteTitleDrawable;
     }
 
     public Drawable getNoteFingerIndexDrawable() {
@@ -79,6 +70,11 @@ public class Note {
 
     public void setFingerIndexVisible(boolean fingerIndexVisible) {
         isFingerIndexVisible = fingerIndexVisible;
+    }
+
+    @Override
+    public boolean isBarredNote() {
+        return false;
     }
 
     @Override

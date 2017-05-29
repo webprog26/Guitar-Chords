@@ -70,7 +70,7 @@ public class ChordFragmentShapesManager {
 
                 for(Note note: chordShape.getNotes()){
                     if(note.getNoteCoordinates().y != 0){
-                        note.setNoteTitleDrawable(resources.getDrawable(NoteBitmapsHelper.getNoteDrawable(note.getNoteTitle())));
+                        note.setNoteMainDrawable(resources.getDrawable(NoteBitmapsHelper.getNoteDrawable(note.getNoteTitle())));
                         note.setNoteFingerIndexDrawable(resources.getDrawable(FingerIndexDrawableIDHelper.getFingerIndexDrawableId(note.getFingerIndex())));
                     }
                 }
