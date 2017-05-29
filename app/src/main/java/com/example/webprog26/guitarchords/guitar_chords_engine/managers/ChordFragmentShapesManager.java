@@ -56,6 +56,7 @@ public class ChordFragmentShapesManager {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void addShapesBitmapsImages(){
         ArrayList<ChordShape> chordShapes = getChordShapes();
         Resources resources = mContext.getResources();

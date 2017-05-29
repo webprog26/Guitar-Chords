@@ -72,10 +72,6 @@ public class Note extends SuperNote{
         isFingerIndexVisible = fingerIndexVisible;
     }
 
-    @Override
-    public boolean isBarredNote() {
-        return false;
-    }
 
     @Override
     public String toString() {

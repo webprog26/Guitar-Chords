@@ -23,7 +23,6 @@ import com.example.webprog26.guitarchords.chord_shapes.fretboard.Fretboard;
 import com.example.webprog26.guitarchords.chord_shapes.fretboard.guitar_string.GuitarString;
 import com.example.webprog26.guitarchords.chord_shapes.note.Note;
 import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableShape;
-import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadNotesBitmapsEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadNotesSoundsEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.NoteSoundsLoadedEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.FretNumbersTransformHelper;
@@ -42,7 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * Created by webpr on 17.05.2017.
+ * Manages shape "playing"
  */
 
 public class PlayShapeFragment extends Fragment {
@@ -84,34 +83,14 @@ public class PlayShapeFragment extends Fragment {
             final int playableShapePosition = getArguments().getInt(FRAGMENT_PLAYABLE_SHAPE_POSITION, -1);
 
             if(playableShapePosition != -1){
-//                Log.i(TAG, "playableShapePosition: " + playableShapePosition);
                 if(GuitarChordsApp.getShapesHolder().getShapesSize() > 0){
-//                    Log.i(TAG, "GuitarChordsApp.getShapesHolder().getShapesSize(): " + GuitarChordsApp.getShapesHolder().getShapesSize());
+
                     final PlayableShape playableShape = GuitarChordsApp.getShapesHolder().getChordPlayableShapes().get(playableShapePosition);
 
                     if(playableShape != null){
 
                     mPlayShapeFragmentManager = new PlayShapeFragmentManager(playableShape);
 
-
-                        Log.i(TAG, playableShape.toString());
-                        for(Note note: playableShape.getNotes()){
-                            Log.i(TAG, note.toString());
-
-                            if(note.getNoteTitleDrawable() != null){
-                                Log.i(TAG, note.getNoteTitleDrawable().toString());
-
-                            } else {
-//                                Log.i(TAG, "note.getNoteTitleDrawable() is null");
-                            }
-                        }
-
-                        if(playableShape.isHasBar()){
-//                            Log.i(TAG, "bar starts at " + playableShape.getBarStartPoint().toString());
-//                            Log.i(TAG, "bar ends at " + playableShape.getBarEndPoint().toString());
-                        }
-
-//                        EventBus.getDefault().post(new LoadNotesBitmapsEvent());
                     }
                 }
             }
@@ -137,11 +116,6 @@ public class PlayShapeFragment extends Fragment {
         if(playShapeFragmentManager != null){
             playShapeFragmentManager.releaseSoundPool();
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onLoadNotesBitmapsEvent(LoadNotesBitmapsEvent loadNotesBitmapsEvent){
-//        mPlayNotesManager.addNotesBitmapsToPlayableShape();
     }
 
     @Nullable
@@ -237,6 +211,7 @@ public class PlayShapeFragment extends Fragment {
         getFret().setOnTouchListener(new FretTouchListener(getPlayShapeFragmentManager()));
     }
 
+    @SuppressWarnings("deprecation")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNoteSoundsLoadedEvent(NoteSoundsLoadedEvent noteSoundsLoadedEvent){
         final PlayShapeFragmentManager playShapeFragmentManager = getPlayShapeFragmentManager();
@@ -273,13 +248,13 @@ public class PlayShapeFragment extends Fragment {
 
                     for(final Note note: playShapeFragmentManager.getPlayableShape().getNotes()){
 
-                        if(note.getNoteTitleDrawable() != null){
+                        if(note.getNoteMainDrawable() != null){
 
                             RelativeLayout fretRelativeLayout = (RelativeLayout) getFret().getChildAt(note.getNotePlace());
                             ImageView stringImageView = (ImageView) fretRelativeLayout.getChildAt(1);
                             stringImageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
                             stringImageView.requestLayout();
-                            stringImageView.setImageDrawable(note.getNoteTitleDrawable());
+                            stringImageView.setImageDrawable(note.getNoteMainDrawable());
                             stringImageView.bringToFront();
                             stringImageView.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -290,7 +265,7 @@ public class PlayShapeFragment extends Fragment {
                                         noteImageDrawable = note.getNoteFingerIndexDrawable();
                                         note.setFingerIndexVisible(true);
                                     } else {
-                                        noteImageDrawable = note.getNoteTitleDrawable();
+                                        noteImageDrawable = note.getNoteMainDrawable();
                                         note.setFingerIndexVisible(false);
                                     }
 
@@ -299,10 +274,6 @@ public class PlayShapeFragment extends Fragment {
                                     }
                                 }
                             });
-                        } else {
-
-//                            Log.i(TAG, "note.getNoteTitleDrawable() is null");
-
                         }
                     }
                 }
@@ -361,7 +332,6 @@ public class PlayShapeFragment extends Fragment {
                                             stringPlayableY = (float) getFret().getChildAt(currentNote.getNoteCoordinates().y - 1).getBottom();
                                         }
 
-//                                    Log.i(TAG, "note y: " + currentNote.getNoteCoordinates().y);
 
                                         Log.i(TAG, currentGuitarString.getTitle() + " with note " + currentGuitarString.getNote().getNoteTitle()
                                                 + " stringPlayableY " + stringPlayableY);
