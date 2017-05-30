@@ -2,7 +2,6 @@ package com.example.webprog26.guitarchords.fragments;
 
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.graphics.drawable.Drawable;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,10 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.webprog26.guitarchords.R;
@@ -26,7 +23,10 @@ import com.example.webprog26.guitarchords.chord_shapes.shapes_models.PlayableSha
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.LoadNotesSoundsEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.events.NoteSoundsLoadedEvent;
 import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.FretNumbersTransformHelper;
+import com.example.webprog26.guitarchords.guitar_chords_engine.helpers.FretViewsHelper;
+import com.example.webprog26.guitarchords.guitar_chords_engine.interfaces.OnFretboardReadyToCatchTouchesCallback;
 import com.example.webprog26.guitarchords.guitar_chords_engine.listeners.FretTouchListener;
+import com.example.webprog26.guitarchords.guitar_chords_engine.listeners.FretsViewTreeObserver;
 import com.example.webprog26.guitarchords.guitar_chords_engine.managers.PlayShapeFragmentManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,7 +44,7 @@ import butterknife.Unbinder;
  * Manages shape "playing"
  */
 
-public class PlayShapeFragment extends Fragment {
+public class PlayShapeFragment extends Fragment implements OnFretboardReadyToCatchTouchesCallback{
 
     private static final String TAG = "PlayShapeFragment";
 
@@ -64,6 +64,8 @@ public class PlayShapeFragment extends Fragment {
 
     private Unbinder unbinder;
     private PlayShapeFragmentManager mPlayShapeFragmentManager;
+    private FretViewsHelper mFretViewsHelper;
+    private FretsViewTreeObserver fretsViewTreeObserver;
 
     public static PlayShapeFragment newInstance(final int playableShapePosition){
         Bundle args = new Bundle();
@@ -78,39 +80,45 @@ public class PlayShapeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
         EventBus.getDefault().register(this);
-        if(getArguments() != null){
-
-            final int playableShapePosition = getArguments().getInt(FRAGMENT_PLAYABLE_SHAPE_POSITION, -1);
-
-            if(playableShapePosition != -1){
-                if(GuitarChordsApp.getShapesHolder().getShapesSize() > 0){
-
-                    final PlayableShape playableShape = GuitarChordsApp.getShapesHolder().getChordPlayableShapes().get(playableShapePosition);
-
-                    if(playableShape != null){
-
-                    mPlayShapeFragmentManager = new PlayShapeFragmentManager(playableShape);
-
-                    }
-                }
-            }
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        PlayShapeFragmentManager playShapeFragmentManager = getPlayShapeFragmentManager();
+        if(getArguments() != null){
 
-        if(playShapeFragmentManager != null){
-            playShapeFragmentManager.createSoundPool();
+            final int playableShapePosition = getArguments().getInt(FRAGMENT_PLAYABLE_SHAPE_POSITION, -1);
+            createPlayShapeFragmentManager(playableShapePosition);
+
         }
+
+        if(mPlayShapeFragmentManager != null){
+            mPlayShapeFragmentManager.createSoundPool();
+        }
+
+        mFretViewsHelper = new FretViewsHelper(getActivity(),
+                                               getFret(),
+                                               getPlayShapeFragmentManager(),
+                                               getStringMutedImageViews());
+        mFretViewsHelper.initMutedStrings();
+
+        fretsViewTreeObserver = new FretsViewTreeObserver(getFret(), getPlayShapeFragmentManager(), mFretViewsHelper, this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
+        if(fretsViewTreeObserver != null){
+            getFret().getViewTreeObserver().removeOnGlobalLayoutListener(fretsViewTreeObserver);
+            fretsViewTreeObserver = null;
+        }
+
+        if(mFretViewsHelper != null){
+            mFretViewsHelper = null;
+        }
+
         PlayShapeFragmentManager playShapeFragmentManager = getPlayShapeFragmentManager();
 
         if(playShapeFragmentManager != null){
@@ -127,42 +135,6 @@ public class PlayShapeFragment extends Fragment {
         return view;
     }
 
-
-    @Override
-    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        PlayShapeFragmentManager playShapeFragmentManager = getPlayShapeFragmentManager();
-
-        if(playShapeFragmentManager != null){
-
-            Fretboard fretboard = playShapeFragmentManager.getFretboard();
-
-            if(fretboard != null){
-
-                for(int i = 0; i < Fretboard.STRINGS_COUNT; i++){
-
-                    GuitarString guitarString = fretboard.getGuitarString(i);
-
-                    if(guitarString != null){
-
-                        if(guitarString.isMuted()){
-
-                            ImageView stringIsMutedImageView = getStringMutedImageViews()[i];
-
-                            if(stringIsMutedImageView != null){
-
-                                if(stringIsMutedImageView.getVisibility() == View.INVISIBLE){
-
-                                    stringIsMutedImageView.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onLoadNotesSoundsEvent(LoadNotesSoundsEvent loadNotesSoundsEvent){
@@ -181,6 +153,7 @@ public class PlayShapeFragment extends Fragment {
                 if(fretboard != null){
 
                     for(int i = 0; i < Fretboard.STRINGS_COUNT; i++){
+
                         GuitarString guitarString = fretboard.getGuitarString(i);
 
                        if(guitarString != null){
@@ -222,140 +195,16 @@ public class PlayShapeFragment extends Fragment {
 
                 if(playShapeFragmentManager.isShouldDrawBar()){
 
-                    int barStartPlace = playShapeFragmentManager.getBarStartPlace();
-                    int barEndPlace = playShapeFragmentManager.getBarEndPlace();
-
-                    if(barStartPlace != PlayableShape.UNEXISTING_COORDINATE
-                            && barEndPlace != PlayableShape.UNEXISTING_COORDINATE){
-
-                        for(int i = barStartPlace; i < barEndPlace; i += 5){
-                            RelativeLayout fretRelativeLayout = (RelativeLayout) getFret().getChildAt(i);
-                            ImageView stringImageView = (ImageView) fretRelativeLayout.getChildAt(1);
-                            stringImageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-                            stringImageView.requestLayout();
-                            stringImageView.setImageDrawable(getResources().getDrawable(R.drawable.bar));
-                            stringImageView.bringToFront();
-                        }
-                    }
+                    mFretViewsHelper.drawBar();
                 }
 
-                getTvFretToStart().setText(
-                        FretNumbersTransformHelper
-                                .getFretToStartString(playShapeFragmentManager
-                                                        .getPlayableShape().getStartFretNumber()));
+                setStartFretPositionNumber();
 
-                if(playShapeFragmentManager.getPlayableShape().getNotes() != null){
-
-                    for(final Note note: playShapeFragmentManager.getPlayableShape().getNotes()){
-
-                        if(note.getNoteMainDrawable() != null){
-
-                            RelativeLayout fretRelativeLayout = (RelativeLayout) getFret().getChildAt(note.getNotePlace());
-                            ImageView stringImageView = (ImageView) fretRelativeLayout.getChildAt(1);
-                            stringImageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-                            stringImageView.requestLayout();
-                            stringImageView.setImageDrawable(note.getNoteMainDrawable());
-                            stringImageView.bringToFront();
-                            stringImageView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Drawable noteImageDrawable;
-                                    Log.i(TAG, "note.isFingerIndexVisible() " + note.isFingerIndexVisible());
-                                    if(!note.isFingerIndexVisible()){
-                                        noteImageDrawable = note.getNoteFingerIndexDrawable();
-                                        note.setFingerIndexVisible(true);
-                                    } else {
-                                        noteImageDrawable = note.getNoteMainDrawable();
-                                        note.setFingerIndexVisible(false);
-                                    }
-
-                                    if(noteImageDrawable != null){
-                                        ((ImageView) v).setImageDrawable(noteImageDrawable);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
+                mFretViewsHelper.initNotesImages();
             }
         }
 
-        getFret().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                GridLayout fretGridLayout = getFret();
-
-                if(fretGridLayout != null){
-                    fretGridLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    int stringIndex = 0;
-
-
-                    if(playShapeFragmentManager != null){
-
-                        for(int i = 4; i < fretGridLayout.getChildCount(); i+= 5){
-                            RelativeLayout relativeLayout = (RelativeLayout) fretGridLayout.getChildAt(i);
-
-                            if(relativeLayout != null){
-
-                                ImageView stringImageView = (ImageView) relativeLayout.getChildAt(0);
-
-                                if(stringImageView != null){
-                                    playShapeFragmentManager.setStringsCoordinates((relativeLayout.getX() + stringImageView.getX() - 20),
-                                            (relativeLayout.getX() + stringImageView.getX()) + stringImageView.getWidth() + 20, stringIndex);
-                                    stringIndex++;
-                                }
-                            }
-                        }
-                    }
-
-                    if(playShapeFragmentManager != null){
-
-                        Fretboard fretboard = playShapeFragmentManager.getFretboard();
-
-                        if(fretboard != null){
-
-                            for(int i = 0; i < Fretboard.STRINGS_COUNT; i++){
-
-                                GuitarString currentGuitarString = fretboard.getGuitarString(i);
-
-                                if(currentGuitarString != null){
-
-                                    Note currentNote = currentGuitarString.getNote();
-
-                                    if(currentNote != null){
-
-                                        float stringPlayableY;
-
-                                        if(currentNote.getNoteCoordinates().y == 0){
-                                            stringPlayableY = 0;
-                                        } else {
-                                            stringPlayableY = (float) getFret().getChildAt(currentNote.getNoteCoordinates().y - 1).getBottom();
-                                        }
-
-
-                                        Log.i(TAG, currentGuitarString.getTitle() + " with note " + currentGuitarString.getNote().getNoteTitle()
-                                                + " stringPlayableY " + stringPlayableY);
-                                        playShapeFragmentManager.setStringPlayableY(stringPlayableY, i);
-
-                                    } else {
-                                        Log.i(TAG, "currentNote is null");
-                                    }
-                                } else {
-                                    Log.i(TAG, "currentGuitarString is null");
-                                }
-                            }
-                        } else {
-                            Log.i(TAG, "fretboard is null");
-                        }
-                    } else {
-                        Log.i(TAG, "playShapeFragmentManager is null");
-                    }
-
-                    catchFretboardTouches();
-                    fretGridLayout.getViewTreeObserver().addOnGlobalLayoutListener(this);
-                }
-            }
-        });
+        getFret().getViewTreeObserver().addOnGlobalLayoutListener(fretsViewTreeObserver);
     }
 
     @Override
@@ -384,5 +233,36 @@ public class PlayShapeFragment extends Fragment {
 
     private ImageView[] getStringMutedImageViews() {
         return mStringMutedImageViews;
+    }
+
+    private void createPlayShapeFragmentManager(final int playableShapePosition){
+        if(playableShapePosition != -1){
+            if(GuitarChordsApp.getShapesHolder().getShapesSize() > 0){
+
+                final PlayableShape playableShape = GuitarChordsApp.getShapesHolder().getChordPlayableShapes().get(playableShapePosition);
+
+                if(playableShape != null){
+
+                    mPlayShapeFragmentManager = new PlayShapeFragmentManager(playableShape);
+                }
+            }
+        }
+    }
+
+    private void setStartFretPositionNumber(){
+
+        PlayShapeFragmentManager playShapeFragmentManager = getPlayShapeFragmentManager();
+
+        if(playShapeFragmentManager != null){
+            getTvFretToStart().setText(
+                    FretNumbersTransformHelper
+                            .getFretToStartString(playShapeFragmentManager
+                                    .getPlayableShape().getStartFretNumber()));
+        }
+    }
+
+    @Override
+    public void onFretboardReadyToCatchTouches() {
+        catchFretboardTouches();
     }
 }
