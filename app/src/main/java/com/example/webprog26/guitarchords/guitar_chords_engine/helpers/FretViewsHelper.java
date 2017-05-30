@@ -72,7 +72,7 @@ public class FretViewsHelper {
     }
 
     @SuppressWarnings("deprecation")
-    public void setBarImage(int index){
+    private void setBarImage(int index){
         ImageView stringImageView = getStringImageView(getFretLayout(index), NOTE_IMAGE_VIEW_INDEX);
         stringImageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
         stringImageView.requestLayout();
@@ -80,7 +80,7 @@ public class FretViewsHelper {
         stringImageView.bringToFront();
     }
 
-    public void initSingleNoteWithImages(final Note note){
+    private void initSingleNoteWithImages(final Note note){
         if(note.getNoteMainDrawable() != null){
 
             ImageView stringImageView = getStringImageView(getFretLayout(note.getNotePlace()), NOTE_IMAGE_VIEW_INDEX);
@@ -145,7 +145,7 @@ public class FretViewsHelper {
         return mStringMutedImageViews;
     }
 
-    public GridLayout getFretBoardLayout() {
+    private GridLayout getFretBoardLayout() {
         return fretBoardLayout;
     }
 
